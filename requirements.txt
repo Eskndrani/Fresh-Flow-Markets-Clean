@@ -1,5 +1,7 @@
 # Fresh Flow Markets - Inventory Management System Dependencies
 # =================================================================
+# Scanned from: dashboard.py, app.py, src/api, New_ML_Models/Guide_to_use/guide.py
+# Install: pip install -r requirements.txt
 
 # ─────────────────────────────────────────────────────────────────
 # Core Data Processing
@@ -71,7 +73,6 @@ requests>=2.31.0            # HTTP library
 python-dateutil>=2.8.0      # Date/time utilities
 joblib>=1.3.0               # ML model serialization
 redis>=5.0.0                # Caching (optional for production)
-scikit-learn>=1.3.0         # ML algorithms (classification)
 
 # ─────────────────────────────────────────────────────────────────
 # Data Quality & Cleaning

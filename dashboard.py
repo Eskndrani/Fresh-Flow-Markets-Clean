@@ -6,8 +6,6 @@ import requests
 import plotly.express as px
 from datetime import date
 import os
-os.environ["TF_USE_LEGACY_KERAS"] = "1"
-import tensorflow as tf
 # API Configuration
 API_BASE = "http://localhost:5000"
 import sys
@@ -78,6 +76,14 @@ def category_to_model_key(category_display):
         "Other/Uncategorized": "Other_Uncategorized",
     }
     return m.get(category_display)
+
+
+# Category options for forecasting tabs (display names for dropdown)
+FORECAST_CATEGORIES = [
+    "Beverages", "Breakfast & Brunch", "Desserts & Sweets", "Handhelds",
+    "Main Courses", "Misc/Services", "Other/Uncategorized", "Salads & Greens",
+    "Sides & Snacks", "Sushi & Asian",
+]
 
 
 # Page configuration
@@ -388,26 +394,27 @@ def show_forecasting():
     ])
     with tab1:
         st.subheader("Predict Item Demand")
-        item_name = st.text_input("Item name", placeholder="e.g. Chicken Burger, Cola, Sushi Maki...", key="forecast_item_name")
-        category = get_category_from_item(item_name) if item_name else "—"
-        st.write("**Category:**", category)
+        category = st.selectbox("Category", options=FORECAST_CATEGORIES, key="forecast_category")
         month = st.selectbox("Month", options=list(range(1, 13)), format_func=lambda x: str(x), key="forecast_month")
+        last_qty = st.number_input("Last quantity (recent demand)", min_value=0.0, value=50.0, step=1.0, key="forecast_last_qty")
         forecast_days = st.slider("Forecast Period (days)", min_value=1, max_value=30, value=7, key="forecast_days")
         if st.button("🔮 Generate Forecast", type="primary", key="forecast_btn"):
-            # Placeholder: 12 dummy numbers — replace with your logic
-            value=0
-            for i in range(forecast_days):
-                value += stock_forecaster.predict(category, month, i)
-            st.subheader(f"Forecast Result after forecast_days")
-            st.write("Category:", category, "| Month:", month, "| Forecasting days:", forecast_days)
-            st.write("**Number of orders in the next forecast_days:**", value)
+            model_key = category_to_model_key(category)
+            if not model_key:
+                st.warning("Select a category.")
+            else:
+                try:
+                    value = stock_forecaster.predict(model_key, month, last_qty, forecast_days)
+                    st.subheader("Forecast Result")
+                    st.write("Category:", category, "| Month:", month, "| Forecasting days:", forecast_days)
+                    st.metric("Predicted demand (over period)", f"{value:.1f}")
+                except Exception as e:
+                    st.error(f"Forecast failed: {str(e)}")
             
 
     with tab2:
         st.subheader("Stock Reorder Recommendations")
-        reorder_item_name = st.text_input("Item name", placeholder="e.g. Chicken Burger, Cola...", key="reorder_item_name")
-        category_reorder = get_category_from_item(reorder_item_name) if reorder_item_name else "—"
-        st.write("**Category:**", category_reorder)
+        category_reorder = st.selectbox("Category", options=FORECAST_CATEGORIES, key="reorder_category")
         col1, col2 = st.columns(2)
         with col1:
             month_reorder = st.selectbox("Month", options=list(range(1, 13)), format_func=lambda x: str(x), key="reorder_month")
@@ -418,8 +425,8 @@ def show_forecasting():
             safety_multiplier = st.slider("Safety Stock Multiplier", min_value=1.0, max_value=2.0, value=1.2, step=0.1, key="reorder_safety")
         if st.button("📦 Get Reorder Recommendation", type="primary", key="reorder_btn"):
             model_key = category_to_model_key(category_reorder)
-            if not reorder_item_name or not model_key:
-                st.warning("Enter an item name so we can derive the category.")
+            if not model_key:
+                st.warning("Select a category.")
             else:
                 try:
                     reorder_qty = stock_forecaster.stock_reorder_recommendation(
@@ -437,28 +444,26 @@ def show_forecasting():
                     st.error(f"Failed: {str(e)}")
 
     with tab3:
-        st.subheader("Bulk Item Forecast")
-        item_names_input = st.text_area("Item names (comma-separated)", value="Chicken Burger, Cola, Sushi Maki", key="bulk_item_names")
+        st.subheader("Bulk Forecast by Category")
+        categories_bulk = st.multiselect("Categories", options=FORECAST_CATEGORIES, default=[FORECAST_CATEGORIES[0]], key="bulk_categories")
         month_bulk = st.selectbox("Month", options=list(range(1, 13)), format_func=lambda x: str(x), key="bulk_month")
         bulk_forecast_days = st.slider("Forecast Days", min_value=1, max_value=30, value=7, key="bulk_days")
-        last_qty_bulk = st.number_input("Last quantity (used for each item)", min_value=0.0, value=50.0, step=1.0, key="bulk_last_qty")
+        last_qty_bulk = st.number_input("Last quantity (used for each category)", min_value=0.0, value=50.0, step=1.0, key="bulk_last_qty")
         if st.button("🔄 Generate Bulk Forecast", type="primary", key="bulk_btn"):
-            names = [x.strip() for x in item_names_input.split(',') if x.strip()]
-            if not names:
-                st.warning("Enter at least one item name.")
+            if not categories_bulk:
+                st.warning("Select at least one category.")
             else:
                 summary_data = []
-                for item_name in names:
-                    cat = get_category_from_item(item_name)
+                for cat in categories_bulk:
                     model_key = category_to_model_key(cat)
                     if not model_key:
-                        summary_data.append({"Item name": item_name, "Category": cat, "Predicted demand": "N/A", "Status": "❌ Unknown category"})
+                        summary_data.append({"Category": cat, "Predicted demand": "N/A", "Status": "❌ Unknown category"})
                         continue
                     try:
                         pred = stock_forecaster.predict(model_key, month_bulk, last_qty_bulk, bulk_forecast_days)
-                        summary_data.append({"Item name": item_name, "Category": cat, "Predicted demand": f"{pred:.1f}", "Status": "✅ Success"})
+                        summary_data.append({"Category": cat, "Predicted demand": f"{pred:.1f}", "Status": "✅ Success"})
                     except Exception as e:
-                        summary_data.append({"Item name": item_name, "Category": cat, "Predicted demand": "N/A", "Status": f"❌ {str(e)}"})
+                        summary_data.append({"Category": cat, "Predicted demand": "N/A", "Status": f"❌ {str(e)}"})
                 st.dataframe(pd.DataFrame(summary_data), width="stretch", hide_index=True)
     with tab4:
         st.subheader("🎯 Campaign Strategy & Optimization")
