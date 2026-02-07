@@ -1,0 +1,126 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database files
+*.db
+*.sqlite
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Database backups
+*.db-backup
+*.sqlite-backup
+data/**/Backup/
+data/**/*Backup*/
+
+# Scripts (development only)
+scripts/
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment variables
+.env
+.env.local
+# Test scripts and files
+check_items.py
+check_model_features.py
+check_orders.py
+check_top_items.py
+final_status.py
+quick_api_test.py
+quick_test.py
+quick_verify.py
+test_api.ps1
+test_api.py
+test_api_comprehensive.py
+test_campaign_debug.py
+test_dashboard.py
+test_forecasting.py
+test_forecast_scenarios.py
+test_infrastructure.py
+test_integration.py
+test_inventory.py
+test_ml_service.py
+test_model_loading.py
+test_quick.py
+test_website_api.py
+test_bulk.json
+test_category_mapping.json
+test_reorder.json
+test_request.json
+
+# Temporary documentation files
+API_WEBSITE_INTEGRATION_COMPLETE.md
+INFRASTRUCTURE_READY.md
+ORGANIZATION_SUMMARY.md
+REORGANIZATION_COMPLETE.md
+REVENUE_PREDICTOR_FIX_SUMMARY.md
+WEBSITE_INTEGRATION_COMPLETE.md
+FORECASTING_SYSTEM_EXPLAINED.md
+ML_MODELS_ANALYSIS.md
+
+# Temporary files
+output.txt
+start.ps1
+start.bat
+
+# Archive and backup folders
+archive/
+tests/
+data/Backup Before Restoration/
+data/Old data/
+data/Uncleaned Inventory Management data/
+# Large data folders excluded from repository
+data/Old data/
+data/Uncleaned Inventory Management data/
+data/Backup Before Restoration/
+archive/
+
+# ML Model files (large binary files - stored locally only)
+ML_Models/stock_forecaster/models/lstm_models/*.h5
+ML_Models/stock_forecaster/models/xgb_models/*.joblib
+ML_Models/stock_forecaster/models/scalers/*.joblib
