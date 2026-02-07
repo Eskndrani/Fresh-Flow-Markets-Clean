@@ -35,7 +35,6 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 - Customer testimonials and value propositions
 - Quick navigation to all system features
 
-![Home Dashboard](docs/screenshots/home_dashboard.png)
 *Home page with project introduction and navigation*
 
 ### 📊 **Main Statistics Dashboard**
@@ -45,7 +44,6 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 - **Time Period Selection**: Analyze data for 30 days to 5 years
 - **Dynamic Metrics**: Live updates from the database
 
-![Main Statistics Dashboard](docs/screenshots/main_statistics.png)
 *Real-time analytics dashboard with key business metrics*
 
 ### 📦 **Inventory Management**
@@ -57,7 +55,6 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 - **Low Stock Alerts**: Automatic identification of items below threshold
 - **Real-time Inventory Status**: Monitor current stock levels
 
-![Inventory Management](docs/screenshots/inventory_management.png)
 *Inventory management interface with search and filtering capabilities*
 
 ### 🔮 **Forecasting & AI Predictions**
@@ -69,7 +66,6 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 - Visual forecast charts with daily breakdowns
 - Total and average daily demand metrics
 
-![Demand Forecast](docs/screenshots/demand_forecast.png)
 *LSTM-based demand forecasting with interactive charts*
 
 #### 2. **Reorder Recommendations**
@@ -78,7 +74,6 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 - Lead time considerations
 - Urgency indicators for stock replenishment
 
-![Reorder Recommendations](docs/screenshots/reorder_recommendations.png)
 *AI-powered reorder suggestions with safety stock calculations*
 
 #### 3. **Bulk Item Forecast**
@@ -87,7 +82,6 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 - Summary table with category and demand metrics
 - Error handling for items without sufficient data
 
-![Bulk Forecast](docs/screenshots/bulk_forecast.png)
 *Batch forecasting for multiple items*
 
 #### 4. **Campaign ROI Predictor**
@@ -97,7 +91,7 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 - Expected redemptions and success probability
 - Data-driven recommendations (Launch/Consider/Revise)
 
-![Campaign ROI Predictor](docs/screenshots/campaign_roi.png)
+
 *Campaign performance prediction and optimization tools*
 
 #### 5. **Customer Churn Detection**
@@ -107,7 +101,7 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 - Retention strategy recommendations
 - Estimated retention costs
 
-![Customer Churn Detection](docs/screenshots/customer_churn.png)
+
 *Customer churn risk assessment with retention strategies*
 
 #### 6. **Operational Risk Monitor**
@@ -118,7 +112,7 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 - Financial and operational metrics
 - Actionable recommendations based on risk level
 
-![Operational Risk Monitor](docs/screenshots/operational_risk.png)
+
 *Cashier integrity and operational risk monitoring dashboard*
 
 #### 7. **Revenue Forecasting**
@@ -127,7 +121,7 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 - Growth projections with percentage changes
 - Visual revenue comparison charts
 
-![Revenue Forecasting](docs/screenshots/revenue_forecast.png)
+
 *Daily revenue predictions with trend analysis*
 
 ### 📈 **Business Trends**
@@ -135,7 +129,7 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 - Multiple trend analysis sections
 - Data-driven insights for strategic decision-making
 
-![Business Trends](docs/screenshots/business_trends.png)
+
 *Comprehensive business analytics and trend visualizations*
 
 ---
