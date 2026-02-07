@@ -1,0 +1,26 @@
+================================================================================
+FEATURE IMPORTANCE ANALYSIS
+================================================================================
+
+                        feature  importance
+7         balance_variance_risk    0.295525
+1   balance_discrepancy_pct_max    0.261024
+6      balance_discrepancy_risk    0.135874
+0  balance_discrepancy_pct_mean    0.121083
+2       transaction_total_count    0.104010
+3          closing_balance_mean    0.082227
+4             total_amount_mean    0.000160
+5              cash_amount_mean    0.000096
+
+================================================================================
+INTERPRETATION
+================================================================================
+Top Risk Feature: balance_variance_risk
+Importance Score: 0.2955
+
+Features with importance > 10%:
+  - balance_variance_risk: 0.2955 (29.55%)
+  - balance_discrepancy_pct_max: 0.2610 (26.10%)
+  - balance_discrepancy_risk: 0.1359 (13.59%)
+  - balance_discrepancy_pct_mean: 0.1211 (12.11%)
+  - transaction_total_count: 0.1040 (10.40%)
