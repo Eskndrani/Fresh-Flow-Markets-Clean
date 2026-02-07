@@ -23,8 +23,10 @@
 /* Ensure the image doesn't have a border */
 [data-testid="stImage"] img {
     border: none !important;
-}-color: #1E5631;
-    padding: 10px;
+}
+
+-color: #1E5631;
+padding: 10px;
 }
 
 /* 4. Navigation Buttons (Off-White text) */
@@ -63,7 +65,7 @@ h3, p, span, label, .stMetric {
 }
 /* --- SIDEBAR STYLING --- */
 [data-testid="stSidebar"] {
-    background-color: #1E5631 !important;
+    background-color: #49554b !important;
     border-right: 1px solid #1E5631 !important;
 }
 
