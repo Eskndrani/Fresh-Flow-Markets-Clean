@@ -137,8 +137,6 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 ![Business Trends](docs/screenshots/business_trends.png)
 *Comprehensive business analytics and trend visualizations*
 
-> **Note**: Screenshots should be placed in `docs/screenshots/` directory. If screenshots are not available, you can take them by running the dashboard and capturing the UI.
-
 ---
 
 ## 🛠️ Technologies Used
