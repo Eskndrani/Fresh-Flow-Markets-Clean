@@ -25,6 +25,8 @@ Testing/
 
 ## 🧪 Testing Notebooks
 
+#run notebooks to see the performance or see the output of saved notebooks
+
 ### 1. Main Tests Notebook (`main_tests.ipynb`)
 
 Tests 4 ML models on their respective test datasets:

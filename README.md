@@ -1,3 +1,4 @@
+Images are in the directory
 # Fresh Flow Markets - AI-Powered Inventory Management System
 
 **Deloitte Innovation Hub x AUC Hackathon 2026**
