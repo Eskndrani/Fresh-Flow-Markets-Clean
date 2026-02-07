@@ -559,7 +559,7 @@ This project was developed collaboratively by a talented team of 4 members as pa
 ### Team Members & Contributions
 
 #### 🔹 [Mahmoud Alaskndrany](https://github.com/Eskndrani) - Lead Backend & ML Engineer
-**65 commits | Contribution: 25%** | *GitHub: [@Eskndrani](https://github.com/Eskndrani)*
+**38 commits | Contribution: 25%** | *GitHub: [@Eskndrani](https://github.com/Eskndrani)*
 
 - 🗄️ **Database Architecture**: Designed and implemented complete SQLite database with 2.7M+ rows, comprehensive schema documentation, and indexing
 - 🔌 **REST API Development**: Built 11 production-ready Flask API endpoints with CORS support and health monitoring
