@@ -6,10 +6,21 @@ A comprehensive inventory management platform that leverages machine learning to
 
 ------
 
-## 🔗 Repository History & Bandwidth Notice
-> **Note on Migration**: All project information and development history are preserved in our original repository. Due to bandwidth limits on the previous host, we have migrated to this current repository for active development and deployment.
+## 🔗 Repository History & Migration Note
+
+> **Development Across Two Repositories**: This project's development history spans two GitHub repositories due to Git LFS bandwidth limitations encountered during the hackathon.
 > 
-> **Old Repository Link**: [Fresh-Flow-Markets-Inventory-Management-DIH-X-AUC-Hackathon](https://github.com/kareemelramly/Fresh-Flow-Markets-Inventory-Management-DIH-X-AUC-Hackathon-.git)
+> **📦 Original Repository** (Initial Development):  
+> 🔗 [kareemelramly/Fresh-Flow-Markets-Inventory-Management-DIH-X-AUC-Hackathon-](https://github.com/kareemelramly/Fresh-Flow-Markets-Inventory-Management-DIH-X-AUC-Hackathon-)  
+> *Initial development, data setup, and early ML models*
+>
+> **🚀 Current Repository** (Production & Deployment):  
+> 🔗 [Eskndrani/Fresh-Flow-Markets-Clean](https://github.com/Eskndrani/Fresh-Flow-Markets-Clean)  
+> *Active development, production-ready code, and final deployment*
+>
+> **Team Members**: [@Eskndrani](https://github.com/Eskndrani), [@mariamibrahim05](https://github.com/mariamibrahim05), [@Shahd186](https://github.com/Shahd186), [@kareemelramly](https://github.com/kareemelramly), [@kareemadelabdellatif](https://github.com/kareemadelabdellatif)
+>
+> For complete team contribution details across both repositories, see the [**👥 Contributors**](#-contributors) section below.
 
 ---
 
@@ -106,7 +117,7 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 #### 6. **Operational Risk Monitor**
 - **Quick Risk Lookup**: Pre-calculated risk assessments for cashiers
 - **Manual Risk Analysis**: Enter shift data for new cashiers
-- **Batch Risk Analysis**: Process multiple shift records simultaneously
+ r- **Batch Risk Analysis**: Process multiple shift records simultaneously
 - Risk categorization (Low/Medium/High/Critical)
 - Financial and operational metrics
 - Actionable recommendations based on risk level
@@ -549,6 +560,95 @@ Deloitte/
 ✅ **REST API Backend** - Complete API for inventory and analytics  
 ✅ **Comprehensive Testing** - Test notebooks for all models  
 ✅ **Full Documentation** - API docs, schemas, and usage guides  
+
+---
+
+## 👥 Contributors
+
+This project was developed collaboratively by a talented team of 4 members as part of the Deloitte x AUC Hackathon 2026. The development history spans across two repositories due to LFS bandwidth limitations.
+
+### Team Members & Contributions
+
+#### 🔹 [Mahmoud Alaskndrany](https://github.com/Eskndrani) - Lead Backend & ML Engineer
+**Contribution: 25%** | *GitHub: [@Eskndrani](https://github.com/Eskndrani)*
+
+- 🗄️ **Database Architecture**: Designed and implemented complete SQLite database with 2.7M+ rows, comprehensive schema documentation, and indexing
+- 🔌 **REST API Development**: Built 11 production-ready Flask API endpoints with CORS support and health monitoring
+- 🤖 **ML Integration**: Integrated all 5 ML models, implemented category-based stock forecasting with LSTM models
+- 📊 **Business Analytics**: Developed customer loyalty analysis with RFM segmentation and operational marketing analysis
+- 🎯 **Campaign ROI Predictor**: Implemented ML model for campaign success prediction (96.67% R², 99.90% AUC)
+- 🏗️ **Project Structure**: Organized production-ready codebase, documentation, and deployment infrastructure
+- 🌐 **Website Integration**: Implemented complete 3-page website integration with API connectivity
+- 📈 **Forecasting Enhancements**: Upgraded stock forecaster to category-specific models with improved accuracy
+- 🧪 **Data Quality**: Led data cleaning initiatives, CSV validation, and data restoration processes
+
+#### 🔹 [Mariam Ibrahim](https://github.com/mariamibrahim05) - Frontend Lead & UI/UX Designer
+**Contribution: 25%** | *GitHub: [@mariamibrahim05](https://github.com/mariamibrahim05)*
+
+- 🎨 **UI/UX Design**: Designed and implemented comprehensive styling for dashboard (sidebar, navigation, footer)
+- 💻 **Website Frontend**: Created responsive design for pages 1 and 2 with modern CSS styling
+- 🏷️ **Branding**: Integrated company logo and visual identity across the platform
+- 📊 **Campaign Integration**: Implemented Campaign ROI model visualization and user interface
+- 💰 **Revenue Predictor**: Developed revenue forecasting UI without server dependency
+- 🧹 **Data Cleaning**: Cleaned 6 dimension files (dim_skus, dim_stock_categories, dim_taxonomy_terms, etc.)
+- 🎯 **Model Integration**: Connected multiple ML models to dashboard interface
+- 🔧 **Conflict Resolution**: Managed merge conflicts and ensured code consistency
+
+#### 🔹 [Shahd Feky](https://github.com/Shahd186) - UI Developer & Data Analyst
+**Contribution: 25%** | *GitHub: [@Shahd186](https://github.com/Shahd186)*
+
+- 🧹 **Data Cleaning**: Cleaned and validated fct_campaigns, most_ordered datasets
+- 🎨 **CSS Styling**: Created and maintained style.css for consistent UI design
+- 🔍 **Inventory UI**: Enhanced inventory management page with user instructions and low stock alerts
+- 📊 **Risk Monitoring**: Integrated cashier integrity & operational risk monitor with improved UI
+- 👤 **Customer Churn**: Implemented customer churn prediction as dedicated dashboard tab
+- 🔌 **API Integration**: Fixed API connection issues and optimized data fetching
+- 📚 **Documentation**: Updated README.md with feature descriptions and usage guides
+- 🧪 **Stock Forecaster**: Updated stock forecasting notebooks with new model versions
+
+#### 🔹 [Kareem](https://github.com/kareemelramly) - ML Engineer & Full-Stack Developer
+**Contribution: 25%** | *GitHub: [@kareemelramly](https://github.com/kareemelramly) / [@kareemadelabdellatif](https://github.com/kareemadelabdellatif)*
+
+- 🧹 **Data Cleaning**: Cleaned majority of fact tables (fct_orders, fct_order_items, etc.) and dimension files
+- 🤖 **ML Models**: Developed operational risk predictor and customer churn predictor models, fixed and enhanced all ML models integration
+- 📈 **Stock Predictor**: Updated and improved stock predictor model with new README documentation
+- 📊 **Business Analysis**: Completed comprehensive business analysis with visualizations
+- 🏠 **Homepage & Trends**: Developed home page and business trends page
+- 🧪 **Testing**: Added comprehensive testing files for model validation
+- ✨ **Feature Development**: Implemented two additional dashboard features
+- 🔧 **Data & Bug Fixes**: Fixed critical data issues in dim_items and resolved LFS/model loading issues
+- 🌐 **Website Classes**: Implemented M-classes for website functionality
+- 📁 **Data Safety**: Maintained old data backups for recovery and validation
+- 📊 **Dashboard Maintenance**: Restored and maintained dashboard.py functionality
+- 🔄 **Version Control**: Managed merges and code synchronization
+
+### Repository History
+
+**📦 Original Repository** (Development Phase):  
+🔗 [kareemelramly/Fresh-Flow-Markets-Inventory-Management-DIH-X-AUC-Hackathon-](https://github.com/kareemelramly/Fresh-Flow-Markets-Inventory-Management-DIH-X-AUC-Hackathon-)
+
+**🚀 Current Repository** (Production):  
+🔗 [Eskndrani/Fresh-Flow-Markets-Clean](https://github.com/Eskndrani/Fresh-Flow-Markets-Clean)
+
+Due to GitHub LFS bandwidth limitations, the project was migrated from the original repository to the current repository for continued development and deployment. All team contributions are reflected across both repositories.
+
+### Contribution Statistics
+
+| Contributor | Contribution | Primary Focus Areas |
+|-------------|--------------|---------------------|
+| Mahmoud Alaskndrany | 25% | Backend, Database, ML Integration, Business Analytics |
+| Mariam Ibrahim | 25% | Frontend, UI/UX, Styling, Branding |
+| Shahd Feky | 25% | UI Components, Data Cleaning, API Integration |
+| Kareem | 25% | ML Models, Testing, Dashboard, Data Analysis |
+| **Total** | **100%** | **Full-Stack Development** |
+
+### Team Collaboration Highlights
+
+- ✅ **Even Distribution**: Well-balanced workload across all team members (Good to Excellent range)
+- 🤝 **Cross-Functional**: Team members collaborated across frontend, backend, ML, and data domains
+- 🔄 **Version Control**: Consistent use of meaningful commit messages and regular merges
+- 📚 **Documentation**: Comprehensive documentation maintained throughout development
+- 🎯 **Code Quality**: High-quality codebase with testing, error handling, and production readiness
 
 ---
 
