@@ -571,7 +571,7 @@ This project was developed collaboratively by a talented team of 4 members as pa
 ### Team Members & Contributions
 
 #### 🔹 [Mahmoud Alaskndrany](https://github.com/Eskndrani) - Lead Backend & ML Engineer
-**Contribution: 25%** | *GitHub: [@Eskndrani](https://github.com/Eskndrani)*
+**65 commits | Contribution: 25%** | *GitHub: [@Eskndrani](https://github.com/Eskndrani)*
 
 - 🗄️ **Database Architecture**: Designed and implemented complete SQLite database with 2.7M+ rows, comprehensive schema documentation, and indexing
 - 🔌 **REST API Development**: Built 11 production-ready Flask API endpoints with CORS support and health monitoring
@@ -584,7 +584,7 @@ This project was developed collaboratively by a talented team of 4 members as pa
 - 🧪 **Data Quality**: Led data cleaning initiatives, CSV validation, and data restoration processes
 
 #### 🔹 [Mariam Ibrahim](https://github.com/mariamibrahim05) - Frontend Lead & UI/UX Designer
-**Contribution: 25%** | *GitHub: [@mariamibrahim05](https://github.com/mariamibrahim05)*
+**28 commits | Contribution: 25%** | *GitHub: [@mariamibrahim05](https://github.com/mariamibrahim05)*
 
 - 🎨 **UI/UX Design**: Designed and implemented comprehensive styling for dashboard (sidebar, navigation, footer)
 - 💻 **Website Frontend**: Created responsive design for pages 1 and 2 with modern CSS styling
@@ -596,7 +596,7 @@ This project was developed collaboratively by a talented team of 4 members as pa
 - 🔧 **Conflict Resolution**: Managed merge conflicts and ensured code consistency
 
 #### 🔹 [Shahd Feky](https://github.com/Shahd186) - UI Developer & Data Analyst
-**Contribution: 25%** | *GitHub: [@Shahd186](https://github.com/Shahd186)*
+**23 commits | Contribution: 25%** | *GitHub: [@Shahd186](https://github.com/Shahd186)*
 
 - 🧹 **Data Cleaning**: Cleaned and validated fct_campaigns, most_ordered datasets
 - 🎨 **CSS Styling**: Created and maintained style.css for consistent UI design
@@ -608,7 +608,7 @@ This project was developed collaboratively by a talented team of 4 members as pa
 - 🧪 **Stock Forecaster**: Updated stock forecasting notebooks with new model versions
 
 #### 🔹 [Kareem](https://github.com/kareemelramly) - ML Engineer & Full-Stack Developer
-**Contribution: 25%** | *GitHub: [@kareemelramly](https://github.com/kareemelramly) / [@kareemadelabdellatif](https://github.com/kareemadelabdellatif)*
+**26 commits | Contribution: 25%** | *GitHub: [@kareemelramly](https://github.com/kareemelramly) / [@kareemadelabdellatif](https://github.com/kareemadelabdellatif)*
 
 - 🧹 **Data Cleaning**: Cleaned majority of fact tables (fct_orders, fct_order_items, etc.) and dimension files
 - 🤖 **ML Models**: Developed operational risk predictor and customer churn predictor models, fixed and enhanced all ML models integration
