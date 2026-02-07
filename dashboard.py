@@ -5,8 +5,11 @@ import pandas as pd
 import requests
 import plotly.express as px
 from datetime import date
+
 # API Configuration
 API_BASE = "http://localhost:5000"
+
+
 
 def fetch_data(endpoint, params=None):
     try:
@@ -318,13 +321,14 @@ def show_forecasting():
         st.warning("⚠️ ML Service may not be fully operational")
     
     st.markdown("---")
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
         "📈 Demand Forecast", 
         "📦 Reorder Recommendations", 
         "🔄 Bulk Forecast",
         "🎯 Campaign ROI",
         "👥 Customer Churn",
-        "🏪 Cashier Integrity and Operational Risk"
+        "🏪 Cashier Integrity and Operational Risk",
+        "💰 Revenue"
 
     ])
     with tab1:
@@ -1110,6 +1114,83 @@ def show_forecasting():
                 
                 except Exception as e:
                     st.error(f"Connection Error: {str(e)}")
+
+    with tab7:
+        st.subheader("💰 Revenue Forecasting")
+        st.markdown("Predict future daily revenue based on historical trends and calendar events.")
+        
+        # UI Layout for inputs
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            lagged_revenue = st.number_input(
+                "Yesterday's Revenue ($)", 
+                min_value=0.0, 
+                value=5000.0, 
+                step=100.0,
+                help="The revenue recorded on the previous business day."
+            )
+        
+        with col2:
+            is_holiday = st.toggle("Is Holiday?", value=False)
+            is_weekend = st.toggle("Is Weekend?", value=False)
+
+        if st.button("🔮 Predict Revenue", type="primary"):
+            with st.spinner("Calculating projected revenue..."):
+                try:
+                    # In a production app, you would call your API:
+                    # response = requests.post(f"{API_BASE}/api/ml/revenue/predict", json={...})
+                    
+                    # Manual implementation using your class logic:
+                    # Note: Ensure RevenuePredictor is imported or defined in your dashboard.py
+                    # from your_module import RevenuePredictor
+                    
+                    # Logic representation:
+                    # predictor = RevenuePredictor()
+                    # pred_value = predictor.predict(int(is_weekend), int(is_holiday), lagged_revenue)
+                    
+                    # Simulated API Call based on your provided class:
+                    payload = {
+                        "is_weekend": int(is_weekend),
+                        "is_holiday": int(is_holiday),
+                        "lagged_revenue": lagged_revenue
+                    }
+                    
+                    response = requests.post(f"{API_BASE}/api/ml/revenue/predict", json=payload, timeout=30)
+                    
+                    if response.status_code == 200:
+                        res = response.json()
+                        if res.get('success'):
+                            pred_revenue = res['data']['predicted_revenue']
+                            
+                            # Display Results
+                            st.divider()
+                            m1, m2 = st.columns(2)
+                            
+                            m1.metric("Predicted Revenue", f"${pred_revenue:,.2f}")
+                            
+                            # Calculate Delta
+                            diff = pred_revenue - lagged_revenue
+                            pct_change = (diff / lagged_revenue) * 100 if lagged_revenue != 0 else 0
+                            m2.metric("Projected Growth", f"{pct_change:+.2f}%", delta=f"${diff:,.2f}")
+
+                            # Visual Representation
+                            plot_data = pd.DataFrame({
+                                "Day": ["Yesterday", "Forecast"],
+                                "Revenue": [lagged_revenue, pred_revenue]
+                            })
+                            fig = px.bar(plot_data, x="Day", y="Revenue", color="Day", 
+                                        title="Revenue Comparison", text_auto='.2s')
+                            st.plotly_chart(fig, use_container_width=True)
+                        else:
+                            st.error(f"Error: {res.get('error')}")
+                    else:
+                        st.error("Revenue model endpoint not found on the server.")
+
+                except Exception as e:
+                    st.error(f"Failed to run Revenue Prediction: {str(e)}")
+
+    
 
     
     st.markdown("---")
