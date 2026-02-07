@@ -1,0 +1,106 @@
+================================================================================
+OPERATIONAL RISK & CASHIER INTEGRITY MONITOR
+MODEL SUMMARY REPORT
+================================================================================
+Generated: 2026-02-07 23:18:20.447556
+
+--------------------------------------------------------------------------------
+1. MODEL OVERVIEW
+--------------------------------------------------------------------------------
+Type: Anomaly Detection with Supervised Classification
+Primary Algorithm: Random Forest Classifier
+Secondary Algorithm: Isolation Forest (Unsupervised)
+Feature Scaling: StandardScaler (Standardization)
+
+--------------------------------------------------------------------------------
+2. MODEL PERFORMANCE
+--------------------------------------------------------------------------------
+Total Samples: 610
+Training Set: 488 (80.0%)
+Test Set: 122 (20.0%)
+
+Accuracy:  1.0000 (100.00%)
+Precision: 1.0000 (of predicted risks, 100.00% are true risks)
+Recall:    1.0000 (catches 100.00% of all actual risks)
+F1-Score:  1.0000 (harmonic mean of precision and recall)
+ROC-AUC:   1.0000 (excellent discrimination ability)
+
+--------------------------------------------------------------------------------
+3. RISK DISTRIBUTION
+--------------------------------------------------------------------------------
+Total Cashiers Analyzed: 610
+High-Risk Cashiers (Predicted): 151
+Low-Risk Cashiers (Predicted): 459
+High-Risk Percentage: 24.75%
+
+Risk Categories (based on probability):
+  - CRITICAL (>90%): 140 cashiers
+  - HIGH (70-90%): 9 cashiers
+  - MEDIUM (50-70%): 2 cashiers
+  - LOW (<50%): 459 cashiers
+
+--------------------------------------------------------------------------------
+4. TOP RISK INDICATORS
+--------------------------------------------------------------------------------
+8. balance_variance_risk: 0.2961 (29.61%)
+2. balance_discrepancy_pct_max: 0.2670 (26.70%)
+7. balance_discrepancy_risk: 0.1319 (13.19%)
+1. balance_discrepancy_pct_mean: 0.1198 (11.98%)
+3. transaction_total_count: 0.1027 (10.27%)
+
+Top Factor: Balance Discrepancy % (max value)
+Avg for High-Risk Cashiers: 455605.25%
+Avg for Low-Risk Cashiers: 14336.22%
+
+--------------------------------------------------------------------------------
+5. KEY FINDINGS
+--------------------------------------------------------------------------------
+Total Transactions Analyzed: 4358222
+Total VAT Component Tracked: 60660021.98 units
+High-Risk Balance Discrepancy - Total: 7896819.84 units
+High-Risk New Balance Discrepancy - Average: 455605.25%
+Max Balance Discrepancy Detected: 13296200.00%
+
+--------------------------------------------------------------------------------
+6. ACTIONABLE RECOMMENDATIONS
+--------------------------------------------------------------------------------
+IMMEDIATE ACTIONS (Next 24-48 hours):
+  • Audit top 140 CRITICAL-risk cashiers (>90% probability)
+  • Review all transactions for past 30 days
+  • Interview cashiers with >20% balance discrepancy
+
+SHORT-TERM (1-2 weeks):
+  • Implement daily settlement reviews for 9 HIGH-risk cashiers
+  • Enable real-time balance monitoring for high-volume transactions
+  • Conduct VAT compliance audit for identified anomalies
+
+MEDIUM-TERM (1-3 months):
+  • Establish dual-verification process for cash handovers
+  • Deploy automated alerting system at >10% discrepancy threshold
+  • Schedule monthly risk reviews with store managers
+
+LONG-TERM (Quarterly):
+  • Retrain model with new data quarterly
+  • Track audit outcomes and model accuracy
+  • Benchmark against industry standards
+
+--------------------------------------------------------------------------------
+7. DEPLOYMENT INFORMATION
+--------------------------------------------------------------------------------
+Model Location: D:\Deloitte\DIH-X-AUC-Hackathon\ML_Models\Operational_risk_predictors\models
+Feature Count: 8
+Number of Decision Trees: 100
+Max Tree Depth: 10
+Contamination Rate (Isolation Forest): 0.24
+
+Prediction Function:
+  predict_cashier_risk(new_data, rf_model, scaler, feature_cols)
+  Returns: {risk_level, risk_probability, risk_category}
+
+--------------------------------------------------------------------------------
+8. DATA QUALITY NOTES
+--------------------------------------------------------------------------------
+Total Features Used: 8
+Missing Values Handled: Yes (filled with 0)
+Infinite Values Handled: Yes (replaced with 0)
+Outliers: Detected and flagged as anomalies

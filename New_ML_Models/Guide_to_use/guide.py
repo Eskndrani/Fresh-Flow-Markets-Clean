@@ -3,7 +3,6 @@ import os
 import numpy as np
 import pandas as pd
 import json
-from tensorflow.keras.models import load_model
 
 def date_to_features(date):
     """
@@ -19,14 +18,14 @@ def date_to_features(date):
 
 class StockForecaster:
     """
-    Forecasts next day's stock quantity for a given item using per-category LSTM models.
+    Forecasts next day's stock quantity for a given item using per-category XGBoost models.
     """
     def __init__(self):
         # Paths - use relative paths from project root
         # model.py is in New_ML_Models/Guide_to_use/, so go up 2 levels to get project root
         current_file = os.path.abspath(__file__)
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(current_file)))
-        self.model_dir = os.path.join(base_dir, "New_ML_Models", "stock_forecaster", "models", "lstm_models") + os.sep
+        self.model_dir = os.path.join(base_dir, "New_ML_Models", "stock_forecaster", "models", "xgb_models") + os.sep
         self.scaler_dir = os.path.join(base_dir, "New_ML_Models", "stock_forecaster", "models", "scalers") + os.sep
         
         self.model = {}
@@ -40,11 +39,9 @@ class StockForecaster:
             "Sides_&_Snacks", "Sushi_&_Asian"
         ]
 
-        # THE FIX: compile=False skips searching for the 'mse' function during load
         for cat in categories:
-            filename = cat
-            model_path = f"{self.model_dir}{filename}_lstm.h5"
-            self.model[cat] = load_model(model_path, compile=False)
+            model_path = f"{self.model_dir}{cat}.joblib"
+            self.model[cat] = joblib.load(model_path)
             self.scaler[cat] = joblib.load(f"{self.scaler_dir}{cat}_scaler.joblib")
             
         path = os.path.join(base_dir, "New_ML_Models", "stock_forecaster", "MSE.json")
@@ -63,20 +60,18 @@ class StockForecaster:
         scaler = self.scaler[category_name]
         prediction = last_qty
         for i in range(number_of_days):
-        # 1. Scale the input
             last_qty = prediction
             qty_scaled = float(scaler.transform([[last_qty]])[0][0])
 
-            # 2. Prepare features (LSTM expects 3D input [samples, time_steps, features])
-            features = np.array([[month, qty_scaled]]) 
-            features = np.reshape(features, (1, 1, features.shape[1]))
+            # XGBoost expects 2D input [samples, features]
+            features = np.array([[month, qty_scaled]])
+            prediction_scaled = model.predict(features)
+            if hasattr(prediction_scaled, 'flatten'):
+                prediction_scaled = prediction_scaled.reshape(1, -1)
+            else:
+                prediction_scaled = np.array([[float(prediction_scaled)]])
 
-            # 3. Predict
-            prediction_scaled = model.predict(features, verbose=0)
-            
-            # 4. Inverse Transform to get actual quantity
             prediction = float(scaler.inverse_transform(prediction_scaled)[0][0])
-        
         return max(0, prediction)
     def stock_reorder_recommendation(self, category_name, month,last_qty,number_of_days,current_stock,multipler):
         prediction = self.predict(category_name, month, last_qty, number_of_days)
@@ -127,9 +122,9 @@ class Operational_risk_predictor:
         current_file = os.path.abspath(__file__)
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(current_file)))
         model_dir = os.path.join(base_dir, "New_ML_Models", "Operational_risk_predictors", "models")
-        self.model = joblib.load(os.path.join(model_dir, 'random_forest_model(preferred).pkl'))
-        self.scaler = joblib.load(os.path.join(model_dir, 'feature_scaler.pkl'))
-        self.feature_columns = joblib.load(os.path.join(model_dir, 'feature_columns.pkl'))
+        self.model = joblib.load(os.path.join(model_dir, 'operational_risk_rf_model.pkl'))
+        self.scaler = joblib.load(os.path.join(model_dir, 'operational_risk_scaler.pkl'))
+        self.feature_columns = joblib.load(os.path.join(model_dir, 'operational_risk_features.pkl'))
     def predict_risk_percentage(self,balance_discrepancy_pct_mean,balance_discrepancy_pct_max,transaction_total_count,closing_balance_mean,total_amount_mean,cash_amount_mean,balance_discrepancy_risk,balance_variance_risk):
         x = [[balance_discrepancy_pct_mean,balance_discrepancy_pct_max,transaction_total_count,closing_balance_mean,total_amount_mean,cash_amount_mean,balance_discrepancy_risk,balance_variance_risk]]
         # Scale features before prediction
@@ -153,5 +148,4 @@ class RevenuePredictor:
         features = np.array([[is_weekend, is_holiday, lagged_revenue]])
         prediction = float(self.model.predict(features)[0])
         return max(0, prediction)
-
-# Execution block removed - models should be initialized by the calling application
+model = Operational_risk_predictor()

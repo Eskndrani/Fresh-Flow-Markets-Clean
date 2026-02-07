@@ -1,11 +1,13 @@
-﻿import plotly.express as px
+import plotly.express as px
 from business_trends_content import business_trends_sections
 import streamlit as st
 import pandas as pd
 import requests
 import plotly.express as px
 from datetime import date
-
+import os
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+import tensorflow as tf
 # API Configuration
 API_BASE = "http://localhost:5000"
 import sys
@@ -14,7 +16,7 @@ from guide import *
 stock_forecaster = StockForecaster()
 customer_churn_detector = Customer_Churn_Detection()
 campaign_detector = Campaign_Detector()
-#opr_risk_predictor = Operational_risk_predictor()
+opr_risk_predictor = Operational_risk_predictor()
 revenue_predictor = RevenuePredictor()
 
 def fetch_data(endpoint, params=None):
@@ -30,6 +32,53 @@ def fetch_data(endpoint, params=None):
 def safe_columns(df, required_cols):
     available_cols = [col for col in required_cols if col in df.columns]
     return df[available_cols] if available_cols else df
+
+
+def get_category_from_item(item_name):
+    """Derive category from item name using keyword matching."""
+    if not item_name or not isinstance(item_name, str):
+        return "Other/Uncategorized"
+    item_lower = item_name.strip().lower()
+    if any(k in item_lower for k in ["soda", "cola", "vin", "beer", "øl", "juice", "coffee", "kaffe", "tea", "the", "latte", "drink", "water", "vand", "lassi", "shake"]):
+        return "Beverages"
+    elif any(k in item_lower for k in ["sushi", "maki", "nigiri", "gyoza", "tempura", "sashimi", "edamame", "hosomaki"]):
+        return "Sushi & Asian"
+    elif any(k in item_lower for k in ["sandwich", "wrap", "burger", "pita", "durum", "rulle"]):
+        return "Handhelds"
+    elif any(k in item_lower for k in ["pizza", "pasta", "steak", "chicken", "meal", "kylling", "kebab", "curry", "bolognese", "lasagna"]):
+        return "Main Courses"
+    elif any(k in item_lower for k in ["cake", "kage", "dessert", "mousse", "sweet", "oreo", "cookie", "is", "gelato", "cheesecake"]):
+        return "Desserts & Sweets"
+    elif any(k in item_lower for k in ["brunch", "breakfast", "morning", "morgen", "egg", "bowl", "yogurt", "pancake"]):
+        return "Breakfast & Brunch"
+    elif any(k in item_lower for k in ["salat", "salad", "greens", "asparges"]):
+        return "Salads & Greens"
+    elif any(k in item_lower for k in ["fries", "fritter", "pommes", "snacks", "dip", "oliven", "mandler", "nuggets", "samosa"]):
+        return "Sides & Snacks"
+    elif any(k in item_lower for k in ["klip", "powerbank", "pose", "lighter", "levering", "personale", "deposit"]):
+        return "Misc/Services"
+    else:
+        return "Other/Uncategorized"
+
+
+def category_to_model_key(category_display):
+    """Map display category (e.g. 'Main Courses') to guide model key (e.g. 'Main_Courses')."""
+    if not category_display or category_display == "—":
+        return None
+    m = {
+        "Beverages": "Beverages",
+        "Sushi & Asian": "Sushi_&_Asian",
+        "Handhelds": "Handhelds",
+        "Main Courses": "Main_Courses",
+        "Desserts & Sweets": "Desserts_&_Sweets",
+        "Breakfast & Brunch": "Breakfast_&_Brunch",
+        "Salads & Greens": "Salads_&_Greens",
+        "Sides & Snacks": "Sides_&_Snacks",
+        "Misc/Services": "Misc_Services",
+        "Other/Uncategorized": "Other_Uncategorized",
+    }
+    return m.get(category_display)
+
 
 # Page configuration
 st.set_page_config(
@@ -339,473 +388,203 @@ def show_forecasting():
     ])
     with tab1:
         st.subheader("Predict Item Demand")
-        col1, col2 = st.columns([2, 1])
-        with col1:
-            item_id = st.number_input("Item ID", min_value=1, value=1, help="Enter the ID of the item to forecast")
-            forecast_days = st.slider("Forecast Period (days)", min_value=1, max_value=30, value=7)
-        with col2:
-            is_holiday = st.checkbox("Is Holiday Period?", value=False)
-            is_weekend = st.checkbox("Is Weekend?", value=False)
-            campaign_active = st.checkbox("Campaign Active?", value=False)
-        
-        if st.button("🔮 Generate Forecast", type="primary"):
-            with st.spinner("Generating forecast..."):
-                try:
-                    response = requests.post(
-                        f"{API_BASE}/api/ml/forecast/demand",
-                        json={
-                            "item_id": item_id,
-                            "forecast_days": forecast_days,
-                            "is_holiday": is_holiday,
-                            "is_weekend": is_weekend,
-                            "campaign_active": campaign_active
-                        },
-                        timeout=30
-                    )
-                    if response.status_code == 200:
-                        result = response.json()
-                        if result.get('success'):
-                            forecast_data = result['data']
-                            if 'item_details' in forecast_data:
-                                item_info = forecast_data['item_details']
-                                st.success(f"**Forecast for:** {item_info.get('name', 'Unknown Item')}")
-                                st.metric("Current Price", f"${item_info.get('current_price', 0):.2f}")
-                            
-                            # Show forecast status message if available
-                            if 'message' in forecast_data:
-                                st.info(f"ℹ️ {forecast_data['message']}")
-                            
-                            st.subheader("Forecast Results")
-                            
-                            # Calculate total demand from predictions array
-                            if 'predictions' in forecast_data:
-                                daily_df = pd.DataFrame(forecast_data['predictions'])
-                                total_demand = daily_df['predicted_quantity'].sum()
-                                avg_daily_demand = daily_df['predicted_quantity'].mean()
-                                
-                                cols = st.columns(2)
-                                with cols[0]: st.metric("Total Predicted Demand", f"{total_demand:.1f} units")
-                                with cols[1]: st.metric("Avg Daily Demand", f"{avg_daily_demand:.1f} units/day")
-                                
-                                fig = px.line(daily_df, x='date', y='predicted_quantity', title=f'{forecast_days}-Day Demand Forecast')
-                                st.plotly_chart(fig, width="stretch")
-                                st.dataframe(daily_df, width="stretch", hide_index=True)
-                            else:
-                                st.warning("No forecast predictions available in the response.")
-                        else:
-                            st.error(f"❌ {result.get('error', 'Unknown error')}")
-                    elif response.status_code == 400:
-                        result = response.json()
-                        st.error(f"❌ Cannot Generate Forecast")
-                        st.warning(f"**Reason:** {result.get('error', 'Insufficient data')}")
-                        if 'details' in result:
-                            st.info(f"**Details:** Category: {result['details'].get('category_attempted', 'Unknown')}")
-                    else:
-                        st.error(f"API Error: {response.status_code}")
-                except Exception as e:
-                    st.error(f"Failed to generate forecast: {str(e)}")
+        item_name = st.text_input("Item name", placeholder="e.g. Chicken Burger, Cola, Sushi Maki...", key="forecast_item_name")
+        category = get_category_from_item(item_name) if item_name else "—"
+        st.write("**Category:**", category)
+        month = st.selectbox("Month", options=list(range(1, 13)), format_func=lambda x: str(x), key="forecast_month")
+        forecast_days = st.slider("Forecast Period (days)", min_value=1, max_value=30, value=7, key="forecast_days")
+        if st.button("🔮 Generate Forecast", type="primary", key="forecast_btn"):
+            # Placeholder: 12 dummy numbers — replace with your logic
+            value=0
+            for i in range(forecast_days):
+                value += stock_forecaster.predict(category, month, i)
+            st.subheader(f"Forecast Result after forecast_days")
+            st.write("Category:", category, "| Month:", month, "| Forecasting days:", forecast_days)
+            st.write("**Number of orders in the next forecast_days:**", value)
+            
 
     with tab2:
         st.subheader("Stock Reorder Recommendations")
+        reorder_item_name = st.text_input("Item name", placeholder="e.g. Chicken Burger, Cola...", key="reorder_item_name")
+        category_reorder = get_category_from_item(reorder_item_name) if reorder_item_name else "—"
+        st.write("**Category:**", category_reorder)
         col1, col2 = st.columns(2)
         with col1:
-            reorder_item_id = st.number_input("Item ID for Reorder", min_value=1, value=1, key="reorder_item")
-            current_stock = st.number_input("Current Stock Level", min_value=0.0, value=100.0, step=1.0)
+            month_reorder = st.selectbox("Month", options=list(range(1, 13)), format_func=lambda x: str(x), key="reorder_month")
+            last_qty = st.number_input("Last quantity (recent demand)", min_value=0.0, value=50.0, step=1.0, key="reorder_last_qty")
+            forecast_days_reorder = st.number_input("Forecast period (days)", min_value=1, value=7, key="reorder_forecast_days")
         with col2:
-            lead_time = st.number_input("Lead Time (days)", min_value=1, value=3)
-            safety_multiplier = st.slider("Safety Stock Multiplier", min_value=1.0, max_value=2.0, value=1.2, step=0.1)
-        
-        if st.button("📦 Get Reorder Recommendation", type="primary"):
-            with st.spinner("Calculating..."):
+            current_stock = st.number_input("Current Stock Level", min_value=0.0, value=100.0, step=1.0, key="reorder_current_stock")
+            safety_multiplier = st.slider("Safety Stock Multiplier", min_value=1.0, max_value=2.0, value=1.2, step=0.1, key="reorder_safety")
+        if st.button("📦 Get Reorder Recommendation", type="primary", key="reorder_btn"):
+            model_key = category_to_model_key(category_reorder)
+            if not reorder_item_name or not model_key:
+                st.warning("Enter an item name so we can derive the category.")
+            else:
                 try:
-                    response = requests.post(f"{API_BASE}/api/ml/forecast/reorder-recommendations", json={
-                        "item_id": reorder_item_id, "current_stock": current_stock,
-                        "lead_time_days": lead_time, "safety_stock_multiplier": safety_multiplier
-                    }, timeout=30)
-                    if response.status_code == 200:
-                        result = response.json()
-                        if result.get('success'):
-                            reorder_data = result['data']
-                            recommendations = reorder_data.get('recommendations', {})
-                            
-                            # Display key metrics
-                            cols = st.columns(4)
-                            with cols[0]: st.metric("Reorder Quantity", f"{recommendations.get('reorder_quantity', 0):.0f}")
-                            with cols[1]: st.metric("Safety Stock", f"{recommendations.get('safety_stock_level', 0):.0f}")
-                            with cols[2]: st.metric("Predicted Demand", f"{reorder_data.get('predicted_demand', 0):.0f}")
-                            with cols[3]: st.metric("Urgency", recommendations.get('urgency', 'N/A').upper())
-                            
-                            # Additional info
-                            if recommendations.get('reorder_needed'):
-                                st.warning(f"⚠️ Reorder needed! Stockout expected: {recommendations.get('days_until_stockout', 'N/A')}")
-                            else:
-                                st.success("✅ Stock levels adequate")
-                        else:
-                            st.error(f"❌ {result.get('error', 'Unknown error')}")
-                    elif response.status_code == 400:
-                        result = response.json()
-                        st.error(f"❌ Cannot Calculate Reorder Recommendations")
-                        st.warning(f"**Reason:** {result.get('error', 'Insufficient data')}")
+                    reorder_qty = stock_forecaster.stock_reorder_recommendation(
+                        model_key, month_reorder, last_qty, forecast_days_reorder, current_stock, safety_multiplier
+                    )
+                    pred = stock_forecaster.predict(model_key, month_reorder, last_qty, forecast_days_reorder)
+                    st.metric("Category", category_reorder)
+                    st.metric("Predicted demand (over period)", f"{pred:.1f}")
+                    st.metric("Recommended reorder quantity", f"{reorder_qty:.0f}")
+                    if reorder_qty > 0:
+                        st.warning("⚠️ Reorder recommended.")
                     else:
-                        st.error(f"API Error: {response.status_code}")
-                except Exception as e: st.error(f"Failed: {str(e)}")
+                        st.success("✅ Stock levels adequate.")
+                except Exception as e:
+                    st.error(f"Failed: {str(e)}")
 
     with tab3:
         st.subheader("Bulk Item Forecast")
-        item_ids_input = st.text_area("Item IDs (comma-separated)", value="1, 2, 3, 4, 5")
+        item_names_input = st.text_area("Item names (comma-separated)", value="Chicken Burger, Cola, Sushi Maki", key="bulk_item_names")
+        month_bulk = st.selectbox("Month", options=list(range(1, 13)), format_func=lambda x: str(x), key="bulk_month")
         bulk_forecast_days = st.slider("Forecast Days", min_value=1, max_value=30, value=7, key="bulk_days")
-        if st.button("🔄 Generate Bulk Forecast", type="primary"):
-            try:
-                item_ids = [int(x.strip()) for x in item_ids_input.split(',') if x.strip()]
-                response = requests.post(f"{API_BASE}/api/ml/forecast/bulk-items", json={"item_ids": item_ids, "forecast_days": bulk_forecast_days}, timeout=60)
-                if response.status_code == 200:
-                    result = response.json()
-                    if result.get('success'):
-                        forecasts = result.get('forecasts', [])
-                        summary_data = []
-                        errors_found = []
-                        
-                        for f in forecasts:
-                            item_id = f.get('item_id')
-                            
-                            # Check if this forecast has an error
-                            if f.get('status') == 'error':
-                                errors_found.append(f"Item {item_id}: {f.get('error', 'Unknown error')}")
-                                summary_data.append({
-                                    'Item ID': item_id,
-                                    'Total Demand': 'N/A',
-                                    'Avg Daily': 'N/A',
-                                    'Status': '❌ Error'
-                                })
-                            elif f.get('status') == 'success':
-                                # Calculate total demand from predictions array
-                                predictions = f.get('predictions', [])
-                                if predictions:
-                                    total_demand = sum(p.get('predicted_quantity', 0) for p in predictions)
-                                    avg_daily = total_demand / len(predictions) if predictions else 0
-                                    
-                                    category = f.get('category_used', 'Unknown')
-                                    summary_data.append({
-                                        'Item ID': item_id,
-                                        'Category': category,
-                                        'Total Demand': f"{total_demand:.1f}",
-                                        'Avg Daily': f"{avg_daily:.1f}",
-                                        'Status': '✅ Success'
-                                    })
-                                else:
-                                    summary_data.append({
-                                        'Item ID': item_id,
-                                        'Category': 'N/A',
-                                        'Total Demand': 'N/A',
-                                        'Avg Daily': 'N/A',
-                                        'Status': '❌ No Data'
-                                    })
-                        
-                        # Display results
-                        if summary_data:
-                            st.dataframe(pd.DataFrame(summary_data), width="stretch", hide_index=True)
-                        
-                        # Show errors if any
-                        if errors_found:
-                            st.error("⚠️ Some forecasts failed:")
-                            for err in errors_found:
-                                st.warning(err)
-            except Exception as e: st.error(f"Error: {str(e)}")
+        last_qty_bulk = st.number_input("Last quantity (used for each item)", min_value=0.0, value=50.0, step=1.0, key="bulk_last_qty")
+        if st.button("🔄 Generate Bulk Forecast", type="primary", key="bulk_btn"):
+            names = [x.strip() for x in item_names_input.split(',') if x.strip()]
+            if not names:
+                st.warning("Enter at least one item name.")
+            else:
+                summary_data = []
+                for item_name in names:
+                    cat = get_category_from_item(item_name)
+                    model_key = category_to_model_key(cat)
+                    if not model_key:
+                        summary_data.append({"Item name": item_name, "Category": cat, "Predicted demand": "N/A", "Status": "❌ Unknown category"})
+                        continue
+                    try:
+                        pred = stock_forecaster.predict(model_key, month_bulk, last_qty_bulk, bulk_forecast_days)
+                        summary_data.append({"Item name": item_name, "Category": cat, "Predicted demand": f"{pred:.1f}", "Status": "✅ Success"})
+                    except Exception as e:
+                        summary_data.append({"Item name": item_name, "Category": cat, "Predicted demand": "N/A", "Status": f"❌ {str(e)}"})
+                st.dataframe(pd.DataFrame(summary_data), width="stretch", hide_index=True)
     with tab4:
         st.subheader("🎯 Campaign Strategy & Optimization")
-        st.markdown("Use these tools to either predict the outcome of a specific campaign or find the best parameters to hit your targets.")
+        st.markdown("Use local ML models to predict campaign performance and compare scenarios.")
         
-        # --- PART 1: PREDICTOR MODEL ---
         st.write("### 1. Performance Predictor")
-        st.caption("Enter your planned campaign details to see how it is likely to perform.")
-        
+        st.caption("Model uses: duration_days, discount (%), max_redemptions, redemptions_per_duration.")
         with st.form("campaign_predictor_form"):
             col1, col2 = st.columns(2)
             with col1:
-                duration = st.number_input("Campaign Duration (Days)", min_value=1, value=7, help="How long will the campaign run?")
-                points = st.number_input("Loyalty Points Offered", min_value=0, value=200, step=50)
+                duration = st.number_input("Campaign Duration (Days)", min_value=1, value=7, key="camp_dur")
+                discount = st.slider("Discount (%)", min_value=0, max_value=100, value=20, key="camp_disc")
             with col2:
-                discount = st.slider("Discount Percentage (%)", min_value=0, max_value=100, value=20)
-                min_spend = st.number_input("Minimum Spend Requirement ($)", min_value=0.0, value=100.0, step=10.0)
-            
+                max_redemptions = st.number_input("Max Redemptions", min_value=1, value=100, key="camp_max_red")
+                redemptions_per_duration = st.number_input("Redemptions per Duration", min_value=0.0, value=50.0, step=5.0, key="camp_red_per")
             submit_campaign = st.form_submit_button("🚀 Predict Performance", type="primary")
-
         if submit_campaign:
-            with st.spinner("Analyzing campaign scenario..."):
-                try:
-                    payload = {
-                        "duration_days": duration,
-                        "points": points,
-                        "discount_percent": discount,
-                        "minimum_spend": min_spend
-                    }
-                    response = requests.post(f"{API_BASE}/api/ml/campaigns/predict", json=payload, timeout=30)
-                    
-                    if response.status_code == 200:
-                        res = response.json()
-                        if res.get('success'):
-                            data = res.get('data', {})
-                            predictions = data.get('predictions', {})
-                            recommendation = data.get('recommendation', {})
-                            
-                            st.success("Analysis Complete!")
-                            m1, m2, m3 = st.columns(3)
-                            prob = predictions.get('success_probability', 0)
-                            m1.metric("Success Probability", f"{prob}%")
-                            m2.metric("Expected Redemptions", f"{predictions.get('expected_redemptions', 0)}")
-                            m3.metric("Recommendation", recommendation.get('action', 'N/A'))
-                            
-                            st.write(f"**Confidence Level:** {recommendation.get('confidence', 'Unknown').title()}")
-                            st.progress(prob / 100)
-                            st.info(f"**Expert Insight:** {recommendation.get('reason', 'No additional details available.')}")
-                        else:
-                            st.error(f"❌ Prediction Failed: {res.get('error', 'Unknown error')}")
-                    else:
-                        st.error(f"API Error: {response.status_code}")
-                except Exception as e:
-                    st.error(f"Connection Error: {str(e)}")
+            try:
+                prob = campaign_detector.predict_success_probability(duration, discount, max_redemptions, redemptions_per_duration)
+                expected = campaign_detector.predict_redemption(duration, discount, max_redemptions, redemptions_per_duration)
+                st.success("Analysis Complete!")
+                m1, m2 = st.columns(2)
+                m1.metric("Success Probability", f"{prob * 100:.1f}%")
+                m2.metric("Expected Redemptions", f"{expected}")
+                st.progress(min(prob, 1.0))
+            except Exception as e:
+                st.error(f"Prediction failed: {str(e)}")
 
-        # --- VISUAL SEPARATOR ---
         st.markdown("---")
-        
-        # --- PART 2: OPTIMIZER MODEL ---
         st.write("### 2. Goal Optimizer")
-        st.caption("Set your targets (e.g., target redemptions) and let the AI find the best configuration for you.")
-        
+        st.caption("Try a few duration/discount combinations to find a good success probability.")
         with st.form("campaign_optimizer_form"):
-            o_col1, o_col2, o_col3 = st.columns(3)
+            o_col1, o_col2 = st.columns(2)
             with o_col1:
-                target_redemptions = st.number_input("Target Redemptions", min_value=1, value=50)
+                target_redemptions = st.number_input("Target Redemptions", min_value=1, value=50, key="opt_target")
+                max_red_opt = st.number_input("Max Redemptions (cap)", min_value=1, value=200, key="opt_max_red")
             with o_col2:
-                max_discount = st.slider("Max Allowed Discount (%)", 5, 50, 25)
-            with o_col3:
-                budget_ref = st.number_input("Budget/Redemption ($)", min_value=1.0, value=10.0)
-            
-            optimize_submit = st.form_submit_button("✨ Find Optimal Parameters", type="primary")
-
+                max_discount = st.slider("Max Allowed Discount (%)", 5, 50, 25, key="opt_max_disc")
+            optimize_submit = st.form_submit_button("✨ Find Best Among Samples", type="primary")
         if optimize_submit:
-            with st.spinner("Calculating optimal strategy..."):
-                try:
-                    opt_payload = {
-                        "target_redemptions": target_redemptions,
-                        "max_discount": max_discount,
-                        "budget_per_redemption": budget_ref
-                    }
-                    # Note: Using the specific /optimize endpoint from documentation
-                    response = requests.post(f"{API_BASE}/api/ml/campaigns/optimize", json=opt_payload, timeout=30)
-                    
-                    if response.status_code == 200:
-                        res = response.json()
-                        if res.get('success'):
-                            opt_data = res.get('data', {})
-                            optimal = opt_data.get('optimal_parameters', {})
-                            
-                            st.balloons()
-                            st.success(f"Optimal Configuration Found! (Optimization Score: {opt_data.get('optimization_score', 0):.2f})")
-                            
-                            res_col1, res_col2 = st.columns(2)
-                            with res_col1:
-                                st.markdown("#### ✅ Recommended Settings")
-                                st.write(f"**Duration:** {optimal.get('duration_days')} Days")
-                                st.write(f"**Points:** {optimal.get('points')} pts")
-                                st.write(f"**Discount:** {optimal.get('discount_percent')}%")
-                                st.write(f"**Min Spend:** ${optimal.get('minimum_spend')}")
-                            
-                            with res_col2:
-                                st.markdown("#### 📈 Forecasted Outcome")
-                                st.metric("Predicted Success", f"{optimal.get('success_probability', 0)}%")
-                                st.metric("Expected Redemptions", f"{optimal.get('expected_redemptions', 0):.1f}")
-                        else:
-                            st.error(f"Optimization failed: {res.get('error')}")
-                    else:
-                        st.error(f"Server Error: {response.status_code}")
-                except Exception as e:
-                    st.error(f"Connection Error: {str(e)}")
-        # --- VISUAL SEPARATOR ---
+            try:
+                best_prob, best_dur, best_disc = 0.0, 7, 10
+                for d in [7, 14, 21]:
+                    for disc in range(10, min(max_discount + 1, 51), 5):
+                        p = campaign_detector.predict_success_probability(d, disc, max_red_opt, float(target_redemptions))
+                        if p > best_prob:
+                            best_prob, best_dur, best_disc = p, d, disc
+                st.success("Best sampled configuration found.")
+                st.write("**Recommended:**", best_dur, "days,", best_disc, "% discount → Success probability:", f"{best_prob * 100:.1f}%")
+                st.metric("Expected Redemptions (approx)", campaign_detector.predict_redemption(best_dur, best_disc, max_red_opt, float(target_redemptions)))
+            except Exception as e:
+                st.error(f"Optimization failed: {str(e)}")
         st.markdown("---")
-        
-        # --- PART 3: CAMPAIGN COMPARISON MODEL ---
-        st.write("### 3. Campaign Comparison (Benchmarking)")
-        st.caption("Compare two different scenarios to see which strategy yields the best predicted success.")
-
+        st.write("### 3. Campaign Comparison")
         with st.form("campaign_comparison_form"):
             comp_col1, comp_col2 = st.columns(2)
-            
             with comp_col1:
                 st.markdown("#### 🅰️ Scenario A")
                 a_duration = st.number_input("Duration (A)", min_value=1, value=7, key="dur_a")
-                a_points = st.number_input("Points (A)", min_value=0, value=100, step=50, key="pts_a")
                 a_discount = st.slider("Discount % (A)", 0, 100, 10, key="disc_a")
-                a_spend = st.number_input("Min Spend (A)", min_value=0.0, value=50.0, key="spend_a")
-
+                a_max_red = st.number_input("Max Redemptions (A)", min_value=1, value=100, key="max_red_a")
+                a_red_per = st.number_input("Redemptions per Duration (A)", min_value=0.0, value=30.0, key="red_per_a")
             with comp_col2:
                 st.markdown("#### 🅱️ Scenario B")
                 b_duration = st.number_input("Duration (B)", min_value=1, value=14, key="dur_b")
-                b_points = st.number_input("Points (B)", min_value=0, value=200, step=50, key="pts_b")
                 b_discount = st.slider("Discount % (B)", 0, 100, 20, key="disc_b")
-                b_spend = st.number_input("Min Spend (B)", min_value=0.0, value=100.0, key="spend_b")
-            
+                b_max_red = st.number_input("Max Redemptions (B)", min_value=1, value=100, key="max_red_b")
+                b_red_per = st.number_input("Redemptions per Duration (B)", min_value=0.0, value=50.0, key="red_per_b")
             compare_submit = st.form_submit_button("⚖️ Compare Scenarios", type="primary")
-
         if compare_submit:
-            with st.spinner("Benchmarking scenarios..."):
-                try:
-                    # Batch payload based on ML_API_DOCUMENTATION.md
-                    batch_payload = {
-                        "campaigns": [
-                            {"duration_days": a_duration, "points": a_points, "discount_percent": a_discount, "minimum_spend": a_spend},
-                            {"duration_days": b_duration, "points": b_points, "discount_percent": b_discount, "minimum_spend": b_spend}
-                        ]
-                    }
-                    response = requests.post(f"{API_BASE}/api/ml/campaigns/batch-predict", json=batch_payload, timeout=30)
-                    
-                    if response.status_code == 200:
-                        res = response.json()
-                        if res.get('success'):
-                            best_idx = res.get('best_campaign', {}).get('campaign_index', 0)
-                            preds = res.get('predictions', [])
-                            
-                            st.success(f"Comparison Complete! **Scenario {'A' if best_idx == 0 else 'B'}** is the winner.")
-                            
-                            # Display Side-by-Side Results
-                            res_a, res_b = st.columns(2)
-                            
-                            with res_a:
-                                prob_a = preds[0]['predictions']['success_probability']
-                                st.metric("Scenario A Success", f"{prob_a}%", 
-                                          delta="Winner" if best_idx == 0 else None)
-                                st.write(f"Expected Redemptions: {preds[0]['predictions']['expected_redemptions']}")
-                                
-                            with res_b:
-                                prob_b = preds[1]['predictions']['success_probability']
-                                st.metric("Scenario B Success", f"{prob_b}%", 
-                                          delta="Winner" if best_idx == 1 else None)
-                                st.write(f"Expected Redemptions: {preds[1]['predictions']['expected_redemptions']}")
-                                
-                            # Visual Comparison Chart
-                            comp_df = pd.DataFrame({
-                                "Scenario": ["Scenario A", "Scenario B"],
-                                "Success Probability": [prob_a, prob_b]
-                            })
-                            fig = px.bar(comp_df, x="Scenario", y="Success Probability", color="Scenario", title="Success Probability Comparison")
-                            st.plotly_chart(fig, use_container_width=True)
-                        else:
-                            st.error(f"Comparison failed: {res.get('error')}")
-                    else:
-                        st.error(f"Server Error: {response.status_code}")
-                except Exception as e:
-                    st.error(f"Connection Error: {str(e)}")
+            try:
+                prob_a = campaign_detector.predict_success_probability(a_duration, a_discount, a_max_red, a_red_per)
+                prob_b = campaign_detector.predict_success_probability(b_duration, b_discount, b_max_red, b_red_per)
+                exp_a = campaign_detector.predict_redemption(a_duration, a_discount, a_max_red, a_red_per)
+                exp_b = campaign_detector.predict_redemption(b_duration, b_discount, b_max_red, b_red_per)
+                best_idx = 0 if prob_a >= prob_b else 1
+                st.success(f"**Scenario {'A' if best_idx == 0 else 'B'}** has higher success probability.")
+                res_a, res_b = st.columns(2)
+                with res_a:
+                    st.metric("Scenario A Success", f"{prob_a * 100:.1f}%", delta="Winner" if best_idx == 0 else None)
+                    st.write("Expected Redemptions:", exp_a)
+                with res_b:
+                    st.metric("Scenario B Success", f"{prob_b * 100:.1f}%", delta="Winner" if best_idx == 1 else None)
+                    st.write("Expected Redemptions:", exp_b)
+                comp_df = pd.DataFrame({"Scenario": ["Scenario A", "Scenario B"], "Success Probability": [prob_a * 100, prob_b * 100]})
+                st.plotly_chart(px.bar(comp_df, x="Scenario", y="Success Probability", color="Scenario", title="Success Probability Comparison"), use_container_width=True)
+            except Exception as e:
+                st.error(f"Comparison failed: {str(e)}")
     with tab5:
         st.subheader("Customer Churn and Loyalty Prediction")
-        st.info("Predict individual customer churn risk and get retention recommendations.")
+        st.info("Predict churn using local model (4 features: discount amount, points earned, avg price, waiting time).")
 
         with st.expander("🔍 Analyze Single Customer", expanded=True):
             with st.form("churn_form"):
-                st.info("📊 Model uses 4 features: discount amount, points earned, average price, and waiting time")
                 col1, col2 = st.columns(2)
                 with col1:
-                    cust_id = st.number_input("Customer ID", min_value=1, value=123)
-                    discount_amount = st.number_input("Total Discount Amount ($)", min_value=0.0, value=25.0, step=10.0, help="Total discounts received")
-                    points_earned = st.number_input("Points Earned", min_value=0.0, value=500.0, step=100.0)
+                    cust_id = st.number_input("Customer ID", min_value=1, value=123, key="churn_cust_id")
+                    discount_amount = st.number_input("Total Discount Amount ($)", min_value=0.0, value=25.0, step=10.0, key="churn_disc")
+                    points_earned = st.number_input("Points Earned", min_value=0.0, value=500.0, step=100.0, key="churn_pts")
                 with col2:
-                    price = st.number_input("Avg Order Price ($)", min_value=0.0, value=75.50, step=10.0)
-                    waiting_time = st.number_input("Avg Waiting Time (min)", min_value=0.0, value=25.5, step=0.5)
-                
+                    price = st.number_input("Avg Order Price ($)", min_value=0.0, value=75.50, step=10.0, key="churn_price")
+                    waiting_time = st.number_input("Avg Waiting Time (min)", min_value=0.0, value=25.5, step=0.5, key="churn_wait")
                 submit = st.form_submit_button("🔮 Predict Churn Risk", type="primary")
-
             if submit:
-                with st.spinner("Analyzing customer behavior..."):
-                    try:
-                        payload = {
-                            "customer_id": cust_id,
-                            "discount_amount": discount_amount,
-                            "points_earned": points_earned,
-                            "price": price,
-                            "waiting_time": waiting_time
-                        }
-                        response = requests.post(f"{API_BASE}/api/ml/customers/churn-risk", json=payload, timeout=30)
-                        
-                        if response.status_code == 200:
-                            res = response.json()
-                            if res.get('success'):
-                                result = res.get('data', {})
-                                # Check if model is ready
-                                if result.get('status') == 'model_not_ready':
-                                    st.warning(f"⚠️ {result.get('message', 'Model not available')}")
-                                else:
-                                    risk = result.get('churn_risk', {})
-                                    strat = result.get('retention_strategy', {})
-                                    insights = result.get('customer_insights', {})
-
-                                    st.success("Analysis Complete!")
-                                    m1, m2, m3 = st.columns(3)
-                                    prob_churn = risk.get('probability', 0)
-                                    m1.metric("Churn Probability", f"{prob_churn}%")
-                                    m2.metric("Risk Level", risk.get('level', 'N/A').upper())
-                                    m3.metric("Will Churn", "Yes" if risk.get('will_churn', False) else "No")
-
-                                    st.write(f"**Risk Severity Assessment:** {risk.get('level', 'Unknown').title()}")
-                                    st.progress(prob_churn / 100)
-                                    
-                                    col_a, col_b = st.columns(2)
-                                    with col_a:
-                                        st.markdown("#### 💡 Customer Insights")
-                                        st.write(f"- **Engagement:** {insights.get('engagement_level', 'N/A').title()}")
-                                        st.write(f"- **Avg Order Value:** ${insights.get('avg_order_value', 0):.2f}")
-                                        st.write(f"- **Discount Usage:** ${insights.get('discount_usage', 0):.2f}")
-                                    
-                                    with col_b:
-                                        st.markdown("#### 🎯 Retention Strategy")
-                                        st.write(f"**Urgency:** {strat.get('urgency', 'N/A').upper()}")
-                                        st.write(f"**Estimated Cost:** ${strat.get('estimated_retention_cost', 0)}")
-                                        st.markdown("**Recommended Actions:**")
-                                        for action in strat.get('recommended_actions', []):
-                                            st.write(f"- {action}")
-                            else:
-                                st.error(f"Error: {res.get('error', 'Unknown error')}")
-                        else:
-                            st.error(f"API Error: {response.status_code}")
-                    except Exception as e:
-                        st.error(f"UI Transformation Failed: {str(e)}")
+                try:
+                    will_churn = customer_churn_detector.predict(discount_amount, points_earned, price, waiting_time)
+                    st.success("Analysis Complete!")
+                    m1, m2 = st.columns(2)
+                    m1.metric("Customer ID", cust_id)
+                    m2.metric("Will Churn", "Yes" if will_churn else "No")
+                    st.info("Model returns class (0 = no churn, 1 = churn). Use retention actions for flagged customers.")
+                except Exception as e:
+                    st.error(f"Prediction failed: {str(e)}")
 
         st.markdown("---")
-        st.subheader("📋 Batch Churn Risk Analysis")
-        if st.button("Identify High-Risk Customers"):
-            with st.spinner("Scanning customer base..."):
-                try:
-                    current_batch_payload = {
-                        "customers": [{
-                            "customer_id": cust_id,
-                            "discount_amount": discount_amount,
-                            "points_earned": points_earned,
-                            "points_redeemed": points_redeemed,
-                            "price": price,
-                            "waiting_time": waiting_time,
-                            "vip_threshold": vip_threshold,
-                            "rating": rating
-                        }]
-                    }
-                    response = requests.post(f"{API_BASE}/api/ml/customers/batch-churn-risk", json=current_batch_payload, timeout=30)
-                    
-                    if response.status_code == 200:
-                        batch_res = response.json()
-                        if batch_res.get('success'):
-                            bc1, bc2 = st.columns(2)
-                            bc1.metric("Total Customers Scanned", batch_res.get('total_customers', 0))
-                            bc2.metric("High Risk Count", batch_res.get('high_risk_count', 0), delta_color="inverse")
-                            
-                            if 'high_risk_customers' in batch_res:
-                                table_data = []
-                                for c in batch_res['high_risk_customers']:
-                                    c_risk = c.get('churn_risk', {})
-                                    table_data.append({
-                                        "Customer ID": c.get('customer_id'),
-                                        "Probability (%)": c_risk.get('probability'),
-                                        "Risk Level": c_risk.get('level', 'N/A').upper()
-                                    })
-                                st.dataframe(pd.DataFrame(table_data), use_container_width=True, hide_index=True)
-                except Exception as e:
-                    st.error(f"Batch prediction failed: {str(e)}")
+        st.subheader("📋 Batch Churn (same 4 features per row)")
+        batch_disc = st.number_input("Discount ($)", min_value=0.0, value=25.0, key="batch_disc")
+        batch_pts = st.number_input("Points Earned", min_value=0.0, value=500.0, key="batch_pts")
+        batch_price = st.number_input("Avg Price ($)", min_value=0.0, value=75.0, key="batch_price")
+        batch_wait = st.number_input("Waiting Time (min)", min_value=0.0, value=25.0, key="batch_wait")
+        if st.button("Predict Churn for This Profile", key="batch_churn_btn"):
+            try:
+                will_churn = customer_churn_detector.predict(batch_disc, batch_pts, batch_price, batch_wait)
+                st.metric("Will Churn", "Yes" if will_churn else "No")
+            except Exception as e:
+                st.error(f"Batch prediction failed: {str(e)}")
 
     with tab6:
         st.subheader("🏪 Cashier Integrity & Operational Risk Monitor")
@@ -934,107 +713,46 @@ def show_forecasting():
                 cash_amt_sum = st.number_input("Cash Amount Sum ($)", value=150000.0, step=100.0, help="Total cash handled")
             with col2:
                 cash_amt_mean = st.number_input("Cash Amount Mean ($)", value=98.0, step=1.0, help="Average cash per transaction")
+            st.markdown("#### 📊 Model Risk Inputs (2 extra features)")
+            col_r1, col_r2 = st.columns(2)
+            with col_r1:
+                balance_discrepancy_risk = st.number_input("Balance Discrepancy Risk", value=0.0, step=0.1, help="Risk score 0–1")
+            with col_r2:
+                balance_variance_risk = st.number_input("Balance Variance Risk", value=0.0, step=0.1, help="Risk score 0–1")
             
             if st.button("🔍 Analyze Cashier Risk", type="primary"):
                 with st.spinner("Analyzing cashier data..."):
                     try:
-                        payload = {
-                            "cashier_id": cashier_id,
-                            "shift_date": shift_date.strftime("%Y-%m-%d"),
-                            "balance_diff_sum": balance_diff_sum,
-                            "balance_diff_mean": balance_diff_mean,
-                            "balance_diff_std": balance_diff_std,
-                            "balance_diff_min": balance_diff_min,
-                            "balance_diff_max": balance_diff_max,
-                            "balance_discrepancy_pct_mean": balance_disc_pct_mean,
-                            "balance_discrepancy_pct_max": balance_disc_pct_max,
-                            "transaction_total_sum": trans_total_sum,
-                            "transaction_total_count": trans_total_count,
-                            "transaction_total_mean": trans_total_mean,
-                            "vat_component_sum": vat_sum,
-                            "num_transactions_sum": num_trans_sum,
-                            "opening_balance_mean": opening_bal_mean,
-                            "closing_balance_mean": closing_bal_mean,
-                            "id_count": id_count,
-                            "total_amount_sum": total_amt_sum,
-                            "total_amount_mean": total_amt_mean,
-                            "total_amount_std": total_amt_std,
-                            "cash_amount_sum": cash_amt_sum,
-                            "cash_amount_mean": cash_amt_mean
-                        }
-                        
-                        response = requests.post(f"{API_BASE}/api/ml/operations/cashier-risk", json=payload, timeout=30)
-                        
-                        if response.status_code == 200:
-                            res = response.json()
-                            if res.get('success'):
-                                result = res['data']
-                                # Check if model is ready
-                                if result.get('status') == 'model_not_ready':
-                                    st.warning(f"⚠️ {result.get('message', 'Model not available')}")
-                                else:
-                                    risk = result.get('risk_assessment', {})
-                                    financial = result.get('financial_metrics', {})
-                                    operational = result.get('operational_metrics', {})
-                                    actions = result.get('recommended_actions', [])
-                                    
-                                    st.success("✅ Analysis Complete!")
-                                    
-                                    # Risk Metrics
-                                    m1, m2, m3, m4 = st.columns(4)
-                                    risk_score = risk.get('risk_score', 0)
-                                    m1.metric("Risk Score", f"{risk_score*100:.1f}%")
-                                    m2.metric("Risk Level", risk.get('risk_level', 'N/A').upper())
-                                    m3.metric("Balance Diff", f"${financial.get('balance_diff_sum', 0):.2f}")
-                                    m4.metric("Action Required", "⚠️ Yes" if risk.get('requires_action', False) else "✅ No")
-                                    
-                                    # Risk visualization
-                                    st.markdown("#### 📊 Risk Score")
-                                    st.progress(min(risk_score, 1.0))
-                                    
-                                    # Detailed analysis
-                                    st.markdown("---")
-                                    col_a, col_b = st.columns(2)
-                                    
-                                    with col_a:
-                                        st.markdown("#### 💰 Financial Metrics")
-                                        st.write(f"**Balance Difference Sum:** ${financial.get('balance_diff_sum', 0):.2f}")
-                                        st.write(f"**Discrepancy Pct:** {financial.get('balance_discrepancy_pct', 0):.2f}%")
-                                        st.write(f"**Transaction Total:** ${financial.get('transaction_total', 0):.2f}")
-                                        st.write(f"**Total VAT:** ${financial.get('total_vat', 0):.2f}")
-                                    
-                                    with col_b:
-                                        st.markdown("#### 📋 Operational Metrics")
-                                        st.write(f"**Total Transactions:** {operational.get('num_transactions', 0)}")
-                                        st.write(f"**Avg Transaction Value:** ${operational.get('avg_transaction_value', 0):.2f}")
-                                    
-                                    # Recommendations
-                                    st.markdown("---")
-                                    st.markdown("#### 💡 Recommended Actions")
-                                    urgency = risk.get('risk_level', 'low')
-                                    if urgency == 'critical':
-                                        st.error(f"🚨 **CRITICAL RISK** - Immediate action required")
-                                    elif urgency == 'high':
-                                        st.warning(f"⚠️ **HIGH RISK** - Review required")
-                                    elif urgency == 'medium':
-                                        st.info(f"🔵 **MEDIUM RISK** - Monitor closely")
-                                    else:
-                                        st.success(f"✅ **LOW RISK** - Normal operations")
-                                    
-                                    for action in actions:
-                                        st.write(f"- {action}")
-                                    
-                                    # Overall assessment
-                                    if risk.get('requires_action', False):
-                                        st.error("⚠️ **Alert:** Potential operational risk detected. Review recommended.")
-                                    else:
-                                        st.success("✅ **All Clear:** No significant anomalies detected in this shift.")
-                            else:
-                                st.error(f"Analysis Error: {res.get('error')}")
+                        risk_pct = opr_risk_predictor.predict_risk_percentage(
+                            balance_disc_pct_mean, balance_disc_pct_max, trans_total_count,
+                            closing_bal_mean, total_amt_mean, cash_amt_mean,
+                            balance_discrepancy_risk, balance_variance_risk
+                        )
+                        risk_score = risk_pct * 100
+                        if risk_score >= 70:
+                            risk_level = "CRITICAL"
+                        elif risk_score >= 50:
+                            risk_level = "HIGH"
+                        elif risk_score >= 25:
+                            risk_level = "MEDIUM"
                         else:
-                            st.error(f"API Error: {response.status_code} - {response.text}")
+                            risk_level = "LOW"
+                        st.success("✅ Analysis Complete!")
+                        m1, m2, m3 = st.columns(3)
+                        m1.metric("Risk Score", f"{risk_score:.1f}%")
+                        m2.metric("Risk Level", risk_level)
+                        m3.metric("Action Required", "⚠️ Yes" if risk_score >= 50 else "✅ No")
+                        st.progress(min(risk_pct, 1.0))
+                        if risk_level == "CRITICAL":
+                            st.error("🚨 **CRITICAL RISK** - Immediate action required")
+                        elif risk_level == "HIGH":
+                            st.warning("⚠️ **HIGH RISK** - Review required")
+                        elif risk_level == "MEDIUM":
+                            st.info("🔵 **MEDIUM RISK** - Monitor closely")
+                        else:
+                            st.success("✅ **LOW RISK** - Normal operations")
                     except Exception as e:
-                        st.error(f"Could not connect to Cashier Risk model: {str(e)}")
+                        st.error(f"Could not run risk model: {str(e)}")
             
         st.markdown("---")
         
@@ -1063,55 +781,19 @@ def show_forecasting():
         if st.button("🔮 Predict Revenue", type="primary"):
             with st.spinner("Calculating projected revenue..."):
                 try:
-                    # In a production app, you would call your API:
-                    # response = requests.post(f"{API_BASE}/api/ml/revenue/predict", json={...})
-                    
-                    # Manual implementation using your class logic:
-                    # Note: Ensure RevenuePredictor is imported or defined in your dashboard.py
-                    # from your_module import RevenuePredictor
-                    
-                    # Logic representation:
-                    # predictor = RevenuePredictor()
-                    # pred_value = predictor.predict(int(is_weekend), int(is_holiday), lagged_revenue)
-                    
-                    # Simulated API Call based on your provided class:
-                    payload = {
-                        "is_weekend": int(is_weekend),
-                        "is_holiday": int(is_holiday),
-                        "lagged_revenue": lagged_revenue
-                    }
-                    
-                    response = requests.post(f"{API_BASE}/api/ml/revenue/predict", json=payload, timeout=30)
-                    
-                    if response.status_code == 200:
-                        res = response.json()
-                        if res.get('success'):
-                            pred_revenue = res['data']['predicted_revenue']
-                            
-                            # Display Results
-                            st.divider()
-                            m1, m2 = st.columns(2)
-                            
-                            m1.metric("Predicted Revenue", f"${pred_revenue:,.2f}")
-                            
-                            # Calculate Delta
-                            diff = pred_revenue - lagged_revenue
-                            pct_change = (diff / lagged_revenue) * 100 if lagged_revenue != 0 else 0
-                            m2.metric("Projected Growth", f"{pct_change:+.2f}%", delta=f"${diff:,.2f}")
-
-                            # Visual Representation
-                            plot_data = pd.DataFrame({
-                                "Day": ["Yesterday", "Forecast"],
-                                "Revenue": [lagged_revenue, pred_revenue]
-                            })
-                            fig = px.bar(plot_data, x="Day", y="Revenue", color="Day", 
-                                        title="Revenue Comparison", text_auto='.2s')
-                            st.plotly_chart(fig, use_container_width=True)
-                        else:
-                            st.error(f"Error: {res.get('error')}")
-                    else:
-                        st.error("Revenue model endpoint not found on the server.")
-
+                    pred_revenue = revenue_predictor.predict(int(is_weekend), int(is_holiday), lagged_revenue)
+                    st.divider()
+                    m1, m2 = st.columns(2)
+                    m1.metric("Predicted Revenue", f"${pred_revenue:,.2f}")
+                    diff = pred_revenue - lagged_revenue
+                    pct_change = (diff / lagged_revenue) * 100 if lagged_revenue != 0 else 0
+                    m2.metric("Projected Growth", f"{pct_change:+.2f}%", delta=f"${diff:,.2f}")
+                    plot_data = pd.DataFrame({
+                        "Day": ["Yesterday", "Forecast"],
+                        "Revenue": [lagged_revenue, pred_revenue]
+                    })
+                    fig = px.bar(plot_data, x="Day", y="Revenue", color="Day", title="Revenue Comparison", text_auto='.2s')
+                    st.plotly_chart(fig, use_container_width=True)
                 except Exception as e:
                     st.error(f"Failed to run Revenue Prediction: {str(e)}")
 
