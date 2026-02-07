@@ -4,6 +4,13 @@
 
 A comprehensive inventory management platform that leverages machine learning to optimize stock levels, predict demand, reduce waste, and maximize profits for retail businesses, particularly in fresh produce departments.
 
+------
+
+## 🔗 Repository History & Bandwidth Notice
+> **Note on Migration**: All project information and development history are preserved in our original repository. Due to bandwidth limits on the previous host, we have migrated to this current repository for active development and deployment.
+> 
+> **Old Repository Link**: [Fresh-Flow-Markets-Inventory-Management-DIH-X-AUC-Hackathon](https://github.com/kareemelramly/Fresh-Flow-Markets-Inventory-Management-DIH-X-AUC-Hackathon-.git)
+
 ---
 
 ## 📋 Project Description
@@ -422,7 +429,7 @@ jupyter notebook
 
 1. **Frontend (Streamlit Dashboard)**
    - User interface for all features
-   - Direct model integration (no API dependency for ML)
+   - Direct model integration 
    - Real-time data visualization
    - Interactive forms and inputs
 
