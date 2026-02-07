@@ -1,369 +1,558 @@
-# Deloitte x AUC Hackathon
+# Fresh Flow Markets - AI-Powered Inventory Management System
 
-## 🎯 Machine Learning Models - Campaign ROI Predictor
+**Deloitte Innovation Hub x AUC Hackathon 2026**
 
-**🔥 NEW:** Production-ready ML model for campaign success prediction!
-
-**Location:** [`ML_Models/Campaign_ROI_Predictor/`](./ML_Models/Campaign_ROI_Predictor/)
-
-**Quick Links:**
-- 📓 [Training Notebook](./ML_Models/Campaign_ROI_Predictor/notebooks/campaign_roi_predictor.ipynb) - Complete ML pipeline
-- 🔧 [Production API](./ML_Models/Campaign_ROI_Predictor/api/campaign_predictor_api.py) - Ready to deploy
-- 📊 [Full Analysis Report](./ML_Models/Campaign_ROI_Predictor/docs/CAMPAIGN_PREDICTOR_SUMMARY.md) - Model performance & insights
-- 💾 [Trained Models](./ML_Models/Campaign_ROI_Predictor/models/) - 4 production-ready .pkl files
-- ✅ [Quick Start Guide](./ML_Models/Campaign_ROI_Predictor/README.md) - Usage examples
-
-**Model Performance:**
-- ✅ **96.67% R²** - Redemption count prediction (±0.42 accuracy)
-- ✅ **99.90% AUC** - Success probability classification
-- ✅ **97.67% Accuracy** - Campaign success/failure prediction
-- ✅ **Production Ready** - Tested API with real predictions
-
-**Business Value:**
-- 🎯 Predict campaign success **BEFORE** launch
-- 💰 Find discount "sweet spot" (15-20% optimal)
-- 📈 Expected ROI: Save 20-30% on failed campaign costs
-- 🛡️ Protect profit margins while maximizing engagement
-
-**Key Insights:**
-- **Optimal Duration:** 3-7 days campaigns perform best
-- **Optimal Discount:** 15-20% for maximum ROI
-- **Min Spend Sweet Spot:** 50-100 DKK protects margins
-- **Most Important Factor:** Max redemptions available (50.8% importance)
+A comprehensive inventory management platform that leverages machine learning to optimize stock levels, predict demand, reduce waste, and maximize profits for retail businesses, particularly in fresh produce departments.
 
 ---
 
-## 📊 Customer Loyalty Analysis Deliverable
+## 📋 Project Description
 
-**🎯 COMPLETED:** Comprehensive customer loyalty analysis delivered!
+Fresh Flow Markets is an intelligent inventory management system designed to solve critical challenges faced by retailers:
 
-**Location:** [`Customer Loyalty Analysis/`](./Customer%20Loyalty%20Analysis/)
+- **Stock-out Prevention**: Predict demand accurately to avoid lost sales
+- **Waste Reduction**: Optimize inventory levels to minimize spoilage and waste
+- **Revenue Maximization**: Data-driven decisions to boost profitability
+- **Operational Efficiency**: Automated forecasting and recommendations
+- **Risk Management**: Detect operational anomalies and customer churn risks
 
-**Quick Links:**
-- 📓 [Analysis Notebook](./Customer%20Loyalty%20Analysis/customer_loyalty_analysis.ipynb) - Comprehensive RFM segmentation
-- 📊 [Visualizations Gallery](./Customer%20Loyalty%20Analysis/visualizations/) - 8 professional charts
-- 📄 [Executive Summary](./Customer%20Loyalty%20Analysis/DELIVERABLE_SUMMARY.md) - Key findings
-- 💾 [Data Exports](./Customer%20Loyalty%20Analysis/exports/) - 9 CSV files + insights report
-- ✅ [Completion Status](./Customer%20Loyalty%20Analysis/COMPLETION_STATUS.md) - Full deliverable inventory
-
-**Key Results:**
-- ✅ 1,900 customers analyzed across 5 RFM segments
-- ✅ 8 high-resolution visualizations (300 DPI)
-- ✅ Campaign timing insights (Friday 11 AM-2 PM optimal)
-- ✅ VIP customer analysis and recommendations
+The platform combines a modern web dashboard with a robust REST API backend, powered by 5 production-ready machine learning models that provide actionable insights for inventory management, marketing campaigns, customer retention, and operational risk monitoring.
 
 ---
 
-## Introduction
+## ✨ Features
 
-Welcome to the Deloitte x AUC Hackathon. As potential future consultants at Deloitte, you will face a reality that defines the consulting profession: clients come to us with problems, not solutions.
+### 🏠 **Home Dashboard**
+- Welcome page with project overview
+- Customer testimonials and value propositions
+- Quick navigation to all system features
 
-### The Consultant's Challenge
+![Home Dashboard](docs/screenshots/home_dashboard.png)
+*Home page with project introduction and navigation*
 
-Clients expect consultants to diagnose their challenges and architect innovative solutions. You will not receive a step-by-step guide, just like in the real world. Success requires both technical excellence and business acumen across four key dimensions:
+### 📊 **Main Statistics Dashboard**
+- **Real-time Analytics**: View total transactions, revenue, and average order value
+- **Order Status Distribution**: Visual breakdown of order statuses with pie charts
+- **Top Selling Items**: Identify best-performing products with interactive charts
+- **Time Period Selection**: Analyze data for 30 days to 5 years
+- **Dynamic Metrics**: Live updates from the database
 
-**Technical Skills**: Can you build your solution?
+![Main Statistics Dashboard](docs/screenshots/main_statistics.png)
+*Real-time analytics dashboard with key business metrics*
 
-**Business Thinking**: Should you build it? What value does it provide?
+### 📦 **Inventory Management**
+- **Item Search & Filtering**: Find items by name or barcode
+- **Pagination**: Navigate through large inventory catalogs efficiently
+- **Item Details View**: Comprehensive product information including:
+  - Basic info (ID, title, barcode, price, VAT, status)
+  - Availability settings (delivery, eat-in, takeaway)
+- **Low Stock Alerts**: Automatic identification of items below threshold
+- **Real-time Inventory Status**: Monitor current stock levels
 
-**Team Work**: Can you deliver it together?
+![Inventory Management](docs/screenshots/inventory_management.png)
+*Inventory management interface with search and filtering capabilities*
 
-**Communication**: Can you sell your solution?
+### 🔮 **Forecasting & AI Predictions**
 
-### How to Approach This Challenge
+#### 1. **Demand Forecast (LSTM)**
+- Predict future demand for individual items
+- Multi-day forecasting (1-30 days)
+- Category-based predictions using LSTM neural networks
+- Visual forecast charts with daily breakdowns
+- Total and average daily demand metrics
 
-Each use case below presents a client with a real business problem. The business questions provided are meant to help guide your thinking and give you ideas on possible features to implement. Your approach should be:
+![Demand Forecast](docs/screenshots/demand_forecast.png)
+*LSTM-based demand forecasting with interactive charts*
 
-1. Frame the business problem and understand the value proposition
-2. Identify which business questions your solution will address
-3. Design and implement technical features that deliver measurable business impact
-4. Document how your solution creates value for the client (feel free to name your proposed product something creative)
+#### 2. **Reorder Recommendations**
+- AI-powered reorder quantity suggestions
+- Safety stock calculations with customizable multipliers
+- Lead time considerations
+- Urgency indicators for stock replenishment
 
-Remember: clients look for measurable impact, scalability, and competitive advantages. Think like a consultant, build like an engineer.
+![Reorder Recommendations](docs/screenshots/reorder_recommendations.png)
+*AI-powered reorder suggestions with safety stock calculations*
+
+#### 3. **Bulk Item Forecast**
+- Forecast demand for multiple items simultaneously
+- Batch processing for efficiency
+- Summary table with category and demand metrics
+- Error handling for items without sufficient data
+
+![Bulk Forecast](docs/screenshots/bulk_forecast.png)
+*Batch forecasting for multiple items*
+
+#### 4. **Campaign ROI Predictor**
+- **Performance Predictor**: Predict campaign success probability before launch
+- **Goal Optimizer**: Find optimal campaign parameters to hit targets
+- **Campaign Comparison**: Benchmark two campaign scenarios side-by-side
+- Expected redemptions and success probability
+- Data-driven recommendations (Launch/Consider/Revise)
+
+![Campaign ROI Predictor](docs/screenshots/campaign_roi.png)
+*Campaign performance prediction and optimization tools*
+
+#### 5. **Customer Churn Detection**
+- Individual customer churn risk assessment
+- Probability-based risk levels (Low/Medium/High)
+- Customer engagement insights
+- Retention strategy recommendations
+- Estimated retention costs
+
+![Customer Churn Detection](docs/screenshots/customer_churn.png)
+*Customer churn risk assessment with retention strategies*
+
+#### 6. **Operational Risk Monitor**
+- **Quick Risk Lookup**: Pre-calculated risk assessments for cashiers
+- **Manual Risk Analysis**: Enter shift data for new cashiers
+- **Batch Risk Analysis**: Process multiple shift records simultaneously
+- Risk categorization (Low/Medium/High/Critical)
+- Financial and operational metrics
+- Actionable recommendations based on risk level
+
+![Operational Risk Monitor](docs/screenshots/operational_risk.png)
+*Cashier integrity and operational risk monitoring dashboard*
+
+#### 7. **Revenue Forecasting**
+- Daily revenue predictions based on historical trends
+- Holiday and weekend impact analysis
+- Growth projections with percentage changes
+- Visual revenue comparison charts
+
+![Revenue Forecasting](docs/screenshots/revenue_forecast.png)
+*Daily revenue predictions with trend analysis*
+
+### 📈 **Business Trends**
+- Comprehensive business analytics visualizations
+- Multiple trend analysis sections
+- Data-driven insights for strategic decision-making
+
+![Business Trends](docs/screenshots/business_trends.png)
+*Comprehensive business analytics and trend visualizations*
+
+> **Note**: Screenshots should be placed in `docs/screenshots/` directory. If screenshots are not available, you can take them by running the dashboard and capturing the UI.
 
 ---
 
-## Dataset Download
+## 🛠️ Technologies Used
 
-Due to file size limitations, the datasets are provided via GitHub Releases.
+### **Frontend & Dashboard**
+- **Streamlit** (v1.25.0+): Interactive web dashboard framework
+- **Plotly** (v5.14.0+): Interactive data visualizations and charts
+- **HTML/CSS**: Custom styling and UI components
 
-### Quick Start
+### **Backend & API**
+- **Flask** (v2.3.0+): Lightweight web framework for REST API
+- **Flask-CORS** (v4.0.0+): Cross-origin resource sharing support
+- **SQLite**: Database engine (622 MB production database)
+- **SQLAlchemy** (v2.0.0+): ORM and database toolkit
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/ynakhla/DIH-X-AUC-Hackathon.git
-   cd DIH-X-AUC-Hackathon
-   ```
+### **Machine Learning & Data Science**
+- **TensorFlow/Keras**: LSTM neural networks for time series forecasting
+- **scikit-learn** (v1.3.0+): Machine learning algorithms (Random Forest, Gradient Boosting)
+- **XGBoost** (v2.0.0+): Gradient boosting for revenue prediction
+- **pandas** (v2.0.0+): Data manipulation and analysis
+- **numpy** (v1.24.0+): Numerical computations
+- **joblib** (v1.3.0+): Model serialization and model persistence
 
-2. **Download Dataset from Release**
-   
-   **[Download Datasets Here →](https://github.com/ynakhla/DIH-X-AUC-Hackathon/releases/tag/v1.0-data)**
+### **Data Processing**
+- **pandas**: CSV processing and data manipulation
+- **numpy**: Numerical operations
+- **scipy** (v1.11.0+): Statistical functions
 
-   Choose the data for your use case:
-   - **inventory-management.zip** (667 MB) - Use Case 1: Fresh Flow Markets
-   - **menu-engineering-part1.zip** (1.4 GB) - Use Case 2: Flavor Flow Craft
-   - **menu-engineering-part2.zip** (1.2 GB) - Use Case 2: Flavor Flow Craft
-   - **shift-planning.zip** (292 MB) - Use Case 3: Quick Serve Kitchens
+### **Utilities**
+- **requests** (v2.31.0+): HTTP library for API calls
+- **python-dateutil** (v2.8.0+): Date/time utilities
+- **python-dotenv** (v1.0.0+): Environment variable management
 
-   **Note:** Menu Engineering requires BOTH Part 1 and Part 2
-
-3. **Extract to Data Folder**
-   
-   Extract the downloaded ZIP file(s) into the `data/` directory. Your structure should be:
-   ```
-   DIH-X-AUC-Hackathon/
-   ├── data/
-   │   ├── Inventory Management/     (CSV files)
-   │   ├── Menu Engineering Part 1/  (CSV files)
-   │   ├── Menu Engineering Part 2/  (CSV files)
-   │   └── Shift Planning/           (CSV files)
-   └── src/
-   ```
-
-4. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-### Data Notes
-- All timestamps are UNIX integers (use `FROM_UNIXTIME()` in MySQL)
-- All monetary values are in DKK (Danish Krone)
-- **Data Quality**: All CSV files have been cleaned and validated
-  - Fixed malformed CSV parsing errors in `dim_add_ons.csv` and `dim_items.csv`
-  - Removed 2,387 duplicate rows from `most_ordered.csv`
-  - Trimmed whitespace from ~10M values across all files
-  - Backups available in `data/Inventory Management - Quality Backup/`
-- See `data/README.md` for detailed documentation
-- See `database/DATABASE_SCHEMA.md` for complete database schema
-
-### ⚠️ Important Data Limitation for Customer Loyalty Analysis
-
-**Critical Finding: Guest Checkout Dominance**
-
-The `fct_orders` dataset contains **335,214 total orders**, but presents a significant challenge for customer loyalty tracking:
-
-- **335,171 orders (99.99%)** are guest checkouts with `user_id=0` (anonymous)
-- **Only 43 orders (0.01%)** from 28 registered customers with trackable `user_id > 0`
-- **Unknown number of unique customers** because guest orders cannot be linked to individuals
-
-**What This Means:**
-- Each row in `fct_orders` = 1 purchase transaction
-- `user_id=0` indicates anonymous checkout (no customer account)
-- Multiple orders from the same guest customer all show `user_id=0`
-- **Cannot track repeat purchases, customer lifetime value, or loyalty for 99.99% of orders**
-
-**Impact on Analysis:**
-- Traditional customer loyalty analysis is severely limited
-- RFM segmentation only possible for 28 registered customers
-- Customer profiling and personalization not feasible for guest orders
-- Recommendation: Focus on merchant-level patterns, session-based analytics, or implement guest email capture
-
-**Root Cause:** Platform allows anonymous checkout without requiring customer registration or capturing identifying information (email/phone).
-
-**Recommendation for Fresh Flow Markets:**
-1. Implement guest email/phone capture at checkout
-2. Incentivize account creation (loyalty points, discounts)
-3. Enable post-purchase account linking for historical orders
-4. Consider session-based analytics or device fingerprinting for guest behavior tracking
+### **Development Tools**
+- **Jupyter Notebook**: Data analysis and model development
+- **pytest** (v7.4.0+): Testing framework
 
 ---
 
-## Repository & Documentation Requirements
+## 📦 Installation
 
-### Recommended Folder Structure
+### Prerequisites
+- Python 3.7 or higher
+- pip (Python package manager)
+- Git (for cloning the repository)
 
-```
-your-project/
-├── README.md                    # Required
-├── requirements.txt             # Python dependencies
-├── package.json                 # Node.js dependencies
-├── src/                         # Source code
-│   ├── main.py                  # Entry point
-│   ├── models/                  # Data models/ML models
-│   ├── services/                # Business logic
-│   ├── utils/                   # Utility functions
-│   └── api/                     # API endpoints
-├── tests/                       # Test files
-├── docs/                        # Additional documentation
-├── config/                      # Configuration files
-└── data/                        # Sample data (no sensitive info)
-```
-
-### Required Components
-
-### 1. README.md
-
-Your README is the first document evaluators will review. It must include:
-
-- **Project Name and Description**: A clear, concise description of what your project does and the problem it solves
-- **Features**: List all features and functionalities with screenshots from your UI
-- **Technologies Used**: Document all technologies, frameworks, and external APIs used
-- **Installation**: Provide step-by-step installation instructions
-- **Usage**: Include usage guidelines and examples
-- **Architecture**: Brief overview of the system architecture (optional but recommended)
-- **Team Members**: List all team members with their roles and contributions
-
-#### Team Collaboration Requirements
-
-The evaluation heavily weighs **team collaboration** based on GitHub commit history:
-
-| Distribution | Assessment | Impact on Score |
-|--------------|------------|-----------------|
-| Even split (e.g., 33%/33%/34%) | Excellent | Full points |
-| Reasonable split (e.g., 45%/35%/20%) | Good | Most points |
-| Uneven split (e.g., 80%/15%/5%) | Concerning | Reduced points |
-| Single contributor (100%) | Poor | Significant penalty |
-
-Note: If a team member is a non technical member, please document their contributions in the README file to ensure fair assessment.
-
-**Best Practices for Commits:**
-
-1. Each team member should commit their own work - Don't have one person commit everything
-2. Use meaningful commit messages:
-   - Good: "Add user authentication with JWT tokens"
-   - Bad: "update" or "fix"
-3. Commit regularly - Small, frequent commits are better than one massive commit
-4. Use branches for features - Merge via pull requests when possible
-
-**Check Your Contribution Distribution:**
-
-Run this command in your repository:
+### Step 1: Clone the Repository
 ```bash
-git shortlog -sn --all
+git clone <repository-url>
+cd Deloitte
 ```
 
-### 2. Code Organization
-- Use proper file extensions for all code files
-- Maintain a clear and logical folder structure
-- Separate concerns into appropriate directories (models, services, utils, api)
-- Include an entry point file (e.g., main.py, index.js)
+### Step 2: Create Virtual Environment (Recommended)
+```bash
+# On Windows
+python -m venv venv
+venv\Scripts\activate
 
-### 3. Dependencies Management
-- Include a dependencies file (requirements.txt for Python, package.json for Node.js, etc.)
-- List all libraries and frameworks required to run the project
-- Specify version numbers where applicable
+# On macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
 
-### 4. Code Quality
-- Add meaningful comments and docstrings to all functions and classes
-- Include file headers explaining the purpose of each module
-- Follow language-specific best practices and conventions
-- Ensure code runs without errors
+### Step 3: Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
-### 5. Security
-- Do not include sensitive data such as API keys, passwords, or tokens
-- Use environment variables for configuration
-- Include a .gitignore file to exclude sensitive or unnecessary files
+**Note**: For TensorFlow/Keras models, ensure you have sufficient system resources. If you encounter issues, you can install TensorFlow separately:
+```bash
+pip install tensorflow
+```
 
-### 6. Testing
-- Include test files in a dedicated tests directory
-- Document how to run tests
+### Step 4: Set Up Database
+```bash
+# The database should be located at: database/fresh_flow_markets.db
+# If the database doesn't exist, run:
+python setup_database.py
+```
 
-### 7. Additional Documentation
-- Provide architecture overview or diagrams (optional but recommended)
-- Include any additional documentation in a docs directory
-
-### 8. Repository Access
-- Repository must be public
-- Use the main branch for submission
-- Ensure all team members have appropriate access
-
+### Step 5: Verify Installation
+```bash
+# Check that all models are accessible
+python -c "from New_ML_Models.Guide_to_use.model import StockForecaster; print('Models loaded successfully!')"
+```
 
 ---
 
-## Use Cases (Clients)
+## 🚀 Usage
 
-### Fresh Flow Markets: Inventory Management
+### Starting the Dashboard
 
-**The Challenge**
+1. **Launch the Streamlit Dashboard**:
+   ```bash
+   streamlit run dashboard.py
+   ```
+   The dashboard will open in your default web browser at `http://localhost:8501`
 
-Restaurant and grocery owners face a relentless balancing act. Over-stocking leads to waste and expired inventory eating away at profits. Under-stocking causes stockouts, lost revenue, and frustrated customers. The root cause? Poor demand forecasting. Without accurate predictions, businesses are trapped in a cycle of unnecessary costs, reduced profitability, and unsustainable operations. FreshFlow needs intelligent systems, not gut instinct.
+2. **Navigate the Dashboard**:
+   - Use the navigation buttons at the top to switch between pages
+   - **Home**: Project overview and introduction
+   - **Main Statistics**: View sales analytics and key metrics
+   - **Inventory Management**: Browse and search inventory items
+   - **Forecasting Suggestions**: Access all ML prediction features
 
-**Potential Business Questions**
+### Starting the API Server
 
-The following questions are provided to help guide your thinking and inspire potential features for your solution:
+1. **Launch the Flask API Server**:
+   ```bash
+   python app.py
+   ```
+   The API will be available at `http://localhost:5000`
 
-- How do we accurately predict daily, weekly, and monthly demand?
-- What prep quantities should kitchens prepare to minimize waste?
-- How can we prioritize inventory based on expiration dates?
-- What promotions or bundles can move near-expired items profitably?
-- How do external factors (weather, holidays, weekends) impact sales?
+2. **API Endpoints**:
+   - Health Check: `GET http://localhost:5000/health`
+   - ML Service Health: `GET http://localhost:5000/api/ml/health`
+   - Inventory Items: `GET http://localhost:5000/api/inventory/items`
+   - Analytics: `GET http://localhost:5000/api/analytics/dashboard`
+   - See `docs/API_DOCUMENTATION.md` for complete API reference
+
+### Using ML Models Directly
+
+#### Example 1: Stock Demand Forecasting
+```python
+from New_ML_Models.Guide_to_use.model import StockForecaster
+
+# Initialize the model
+forecaster = StockForecaster()
+
+# Predict demand for a beverage item
+predicted_qty = forecaster.predict(
+    category_name="Beverages",
+    month=2,  # February
+    last_qty=50.0,  # Last known quantity
+    number_of_days=7  # Forecast for 7 days
+)
+
+print(f"Predicted quantity: {predicted_qty}")
+```
+
+#### Example 2: Revenue Prediction
+```python
+from New_ML_Models.Guide_to_use.model import RevenuePredictor
+
+# Initialize the model
+predictor = RevenuePredictor()
+
+# Predict tomorrow's revenue
+predicted_revenue = predictor.predict(
+    is_weekend=0,  # Not a weekend
+    is_holiday=0,  # Not a holiday
+    lagged_revenue=5000.0  # Yesterday's revenue
+)
+
+print(f"Predicted revenue: ${predicted_revenue:.2f}")
+```
+
+#### Example 3: Customer Churn Detection
+```python
+from New_ML_Models.Guide_to_use.model import Customer_Churn_Detection
+
+# Initialize the model
+churn_detector = Customer_Churn_Detection()
+
+# Predict churn risk
+will_churn = churn_detector.predict(
+    discount_amount=25.0,
+    points_earned=500.0,
+    price=75.50,
+    waiting_time=25.5
+)
+
+print(f"Will churn: {bool(will_churn)}")
+```
+
+#### Example 4: Campaign Success Prediction
+```python
+from New_ML_Models.Guide_to_use.model import Campaign_Detector
+
+# Initialize the model
+campaign_detector = Campaign_Detector()
+
+# Predict campaign success probability
+success_prob = campaign_detector.predict_success_probability(
+    duration_days=7,
+    discount=20,
+    max_redemptions=100,
+    redemptions_per_duration=15
+)
+
+print(f"Success probability: {success_prob * 100:.1f}%")
+```
+
+#### Example 5: Operational Risk Assessment
+```python
+from New_ML_Models.Guide_to_use.model import Operational_risk_predictor
+
+# Initialize the model
+risk_predictor = Operational_risk_predictor()
+
+# Predict risk percentage
+risk_score = risk_predictor.predict_risk_percentage(
+    balance_discrepancy_pct_mean=150.0,
+    balance_discrepancy_pct_max=27100.0,
+    transaction_total_count=1531,
+    closing_balance_mean=50000.0,
+    total_amount_mean=139.5,
+    cash_amount_mean=98.0,
+    balance_discrepancy_risk=1.0,
+    balance_variance_risk=1.0
+)
+
+print(f"Risk probability: {risk_score * 100:.1f}%")
+```
+
+### Testing ML Models
+
+Run the test notebooks to evaluate model performance:
+
+```bash
+# Navigate to Testing directory
+cd Testing
+
+# Open Jupyter Notebook
+jupyter notebook
+
+# Run main_tests.ipynb for 4 models
+# Run operational_risk_test.ipynb for operational risk model
+```
 
 ---
 
-### Flavor Flow Craft: Menu Engineering
+## 🏗️ Architecture
 
-**The Challenge**
+### System Overview
 
-FlavorCraft sits on a goldmine of historical sales data—every order, every customer preference—yet they're making menu decisions on hunches. They don't know which dishes are secretly losing money, or what tweaks could turn underperformers into bestsellers. This isn't just a missed opportunity; it's revenue left on the table. Your mission is to create a data-driven assistant that analyzes their menu and sales data, suggesting improvements to items, descriptions, and pricing. But don't stop there—your client manager encourages innovative thinking beyond the obvious.
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Frontend Layer                            │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │     Streamlit Dashboard (dashboard.py)                │   │
+│  │     - Interactive UI                                  │   │
+│  │     - Real-time visualizations                       │   │
+│  │     - User input forms                               │   │
+│  └──────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                            ↕
+┌─────────────────────────────────────────────────────────────┐
+│                    API Layer                                       │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │     Flask REST API (app.py)                         │   │
+│  │     - /api/inventory/*                              │   │
+│  │     - /api/analytics/*                              │   │
+│  │     - /api/ml/*                                     │   │
+│  └──────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                            ↕
+┌─────────────────────────────────────────────────────────────┐
+│              Machine Learning Service Layer                   │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  ML Prediction Service                               │   │
+│  │  - StockForecaster (LSTM)                           │   │
+│  │  - RevenuePredictor (XGBoost)                        │   │
+│  │  - Customer_Churn_Detection (Random Forest)         │   │
+│  │  - Campaign_Detector (Random Forest + Gradient Boost)│   │
+│  │  - Operational_risk_predictor (Random Forest)        │   │
+│  └──────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                            ↕
+┌─────────────────────────────────────────────────────────────┐
+│                    Data Layer                                 │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │     SQLite Database                                 │   │
+│  │     - 18 tables (10 dimension + 8 fact tables)      │   │
+│  │     - 2.7M+ rows                                    │   │
+│  │     - Inventory, Orders, Users, Campaigns          │   │
+│  └──────────────────────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │     Model Files                                      │   │
+│  │     - LSTM models (.h5)                             │   │
+│  │     - Scikit-learn models (.pkl, .joblib)          │   │
+│  │     - Scalers and feature mappings                  │   │
+│  └──────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
 
-**Potential Business Questions**
+### Component Breakdown
 
-The following questions are provided to help guide your thinking and inspire potential features for your solution:
+1. **Frontend (Streamlit Dashboard)**
+   - User interface for all features
+   - Direct model integration (no API dependency for ML)
+   - Real-time data visualization
+   - Interactive forms and inputs
 
-- Which menu items are stars, plowhorses, puzzles, or dogs?
-- How should we adjust pricing to maximize profitability?
-- What wording or descriptions increase item sales?
-- Which items should be promoted, re-engineered, or eliminated?
-- What hidden patterns exist in customer purchasing behavior?
+2. **Backend API (Flask)**
+   - RESTful endpoints for inventory and analytics
+   - Database query interface
+   - Data aggregation and processing
+   - CORS-enabled for web integration
 
+3. **ML Service Layer**
+   - 5 production-ready machine learning models
+   - Direct model loading and prediction
+   - Feature preprocessing and scaling
+   - Model caching for performance
 
+4. **Data Layer**
+   - SQLite database for transactional data
+   - CSV files for historical data
+   - Model artifacts (saved models, scalers, mappings)
+   - Configuration files
 
-### Quick Serve Kitchens: Shift Planning
+### Data Flow
 
-**The Challenge**
+1. **User Input** → Dashboard receives user parameters
+2. **Model Loading** → Models loaded from disk (cached)
+3. **Feature Processing** → Input data transformed/scaled
+4. **Prediction** → ML model generates prediction
+5. **Result Display** → Results shown in dashboard with visualizations
 
-Monday's schedule looks perfect. Wednesday: three call-offs. Friday: foot traffic doubles because TikTok made your item viral. The schedule is now a dumpster fire. This is QuickServe's weekly reality. The core problem? Accurately predicting and meeting wildly fluctuating customer demand to ensure optimal staffing on every shift. Too few people means terrible service and burnout. Too many means spiraling labor costs. QuickServe needs a Shift Wizard—an intelligent system that monitors schedules, coverage, PTO, surprise events, and constantly recommends the next best move.
+### Model Architecture Details
 
-**Potential Business Questions**
-
-The following questions are provided to help guide your thinking and inspire potential features for your solution:
-
-- How do we predict demand spikes from social media, weather, or events?
-- What's the optimal staffing level for each shift?
-- How do we quickly adjust when call-offs happen?
-- How can we balance labor costs with service quality?
-- How do we incorporate employee preferences while meeting business needs?
+- **Stock Forecaster**: LSTM neural networks (one per category) with StandardScaler
+- **Revenue Predictor**: XGBoost regressor with 3 features
+- **Customer Churn**: Random Forest classifier with 4 features
+- **Campaign Predictor**: Random Forest classifier + Gradient Boosting regressor
+- **Operational Risk**: Random Forest classifier with 8 features
 
 ---
 
-## Data Cleaning Process
+## 📁 Project Structure
 
-The following datasets were cleaned and preprocessed for analysis:
-
-### Files Modified
-- `data/Inventory Management/dim_skus.csv`: Stock keeping unit definitions
-- `data/Inventory Management/dim_stock_categories.csv`: Product category classifications
-- `data/Inventory Management/dim_taxonomy_terms.csv`: Taxonomy and classification terms
-- `data/Inventory Management/dim_users.csv`: User and customer information
-- `README.md`: Added data cleaning documentation
-
-### Cleaning Operations
-1. **Missing Value Handling**: Filled null values with appropriate defaults based on data type (0 for numeric IDs, 'none' for text fields, 'unknown' for categorical data)
-2. **Duplicate Removal**: Removed duplicate records based on unique ID fields
-3. **Outlier Detection**: Applied z-score method (threshold: 2-3) to remove statistical outliers in numeric columns
-4. **Type Conversion**: Converted Unix timestamps to readable date format
-5. **Data Validation**: Dropped records with missing critical fields (price, status)
-
-### Implementation
-Data cleaning was performed using Python with pandas and scipy libraries. The cleaning notebook is available at `data_cleaning.ipynb`.
+```
+Deloitte/
+├── dashboard.py                 # Main Streamlit dashboard
+├── app.py                      # Flask API server entry point
+├── requirements.txt            # Python dependencies
+├── setup_database.py           # Database initialization script
+│
+├── src/                        # Backend source code
+│   ├── api/                    # API routes and database
+│   │   ├── routes.py           # Standard API endpoints
+│   │   ├── ml_routes.py        # ML prediction endpoints
+│   │   └── database.py         # Database utilities
+│   ├── services/               # Business logic
+│   │   ├── inventory_service.py
+│   │   └── ml_prediction_service.py
+│   └── models/                 # Data models
+│
+├── New_ML_Models/              # Production ML models
+│   ├── Guide_to_use/
+│   │   └── model.py            # Model classes and functions
+│   ├── stock_forecaster/       # LSTM models and scalers
+│   ├── revenue_predictor/      # XGBoost model
+│   ├── customer_churn/         # Random Forest model
+│   ├── Campaign_ROI_Predictor/ # Campaign models
+│   └── Operational_risk_predictors/ # Risk models
+│
+├── database/                    # Database files and docs
+│   ├── fresh_flow_markets.db   # SQLite database (622 MB)
+│   ├── DATABASE_SCHEMA.md      # Schema documentation
+│   └── ERD.md                  # Entity relationship diagrams
+│
+├── data/                        # Data files
+│   └── Inventory Management/    # CSV data files
+│
+├── Testing/                     # Model testing
+│   ├── main_tests.ipynb        # Main test notebook
+│   ├── operational_risk_test.ipynb
+│   └── Results/                # Test results
+│
+└── docs/                        # Documentation
+    ├── API_DOCUMENTATION.md
+    ├── ML_API_DOCUMENTATION.md
+    └── GETTING_STARTED.md
+```
 
 ---
 
-## Evaluation Criteria
+## 📊 Model Performance
 
-### Documentation Quality
-Your project documentation will be evaluated based on the clarity and completeness of your README file, the presence of code comments and docstrings, and the overall organization of documentation materials.
+| Model | Type | Performance Metrics |
+|-------|------|-------------------|
+| **Stock Forecaster** | LSTM (Time Series) | Category-specific MSE tracking |
+| **Revenue Predictor** | XGBoost (Regression) | High accuracy on daily revenue |
+| **Customer Churn** | Random Forest (Classification) | Binary churn prediction |
+| **Campaign ROI** | Random Forest + Gradient Boost | 96.67% R², 99.90% AUC |
+| **Operational Risk** | Random Forest (Classification) | Risk probability scoring |
 
-### Code Architecture & Modularity
-The structure and organization of your codebase will be assessed, including proper separation of concerns, logical folder hierarchy, and modular design patterns that promote maintainability and scalability.
+---
 
-### Team Collaboration
-Collaboration will be evaluated through GitHub commit history, ensuring all team members have contributed meaningfully to the project with clear and descriptive commit messages.
+## 🔗 Additional Resources
 
-### AI/ML Integration
-If your solution incorporates artificial intelligence or machine learning components, the implementation, documentation, and effectiveness of these technologies will be evaluated.
+- **API Documentation**: `docs/API_DOCUMENTATION.md`
+- **ML API Guide**: `docs/ML_API_DOCUMENTATION.md`
+- **Database Schema**: `database/DATABASE_SCHEMA.md`
+- **Getting Started**: `docs/GETTING_STARTED.md`
+- **Testing Guide**: `Testing/README.md`
 
-### Business Value & Innovation
-Your solution will be assessed on its practical applicability, innovation in addressing the problem statement, and potential real-world impact for the specified use case.
+---
 
+## 📝 Notes
 
+- The dashboard uses models directly (no API dependency for ML predictions)
+- All models are loaded from `New_ML_Models/` directory
+- Database path: `database/fresh_flow_markets.db`
+- Default API port: `5000`
+- Default Streamlit port: `8501`
+
+---
+
+## 🎯 Key Achievements
+
+✅ **5 Production-Ready ML Models** - All models tested and integrated  
+✅ **Interactive Dashboard** - User-friendly Streamlit interface  
+✅ **REST API Backend** - Complete API for inventory and analytics  
+✅ **Comprehensive Testing** - Test notebooks for all models  
+✅ **Full Documentation** - API docs, schemas, and usage guides  
+
+---
+
+**Last Updated**: February 2026  
+**Version**: 1.0.4-stable  
+**Project**: Deloitte x AUC Hackathon 2026
