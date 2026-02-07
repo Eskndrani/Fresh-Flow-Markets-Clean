@@ -3,13 +3,18 @@ from business_trends_content import business_trends_sections
 import streamlit as st
 import pandas as pd
 import requests
-import plotly.express as px
 from datetime import date
 import os
+import sys
+
 # API Configuration
 API_BASE = "http://localhost:5000"
-import sys
-sys.path.append('D:/Deloitte/New_ML_Models/Guide_to_use')
+
+# Add ML models to path using relative paths
+current_dir = os.path.dirname(os.path.abspath(__file__))
+ml_guide_path = os.path.join(current_dir, 'New_ML_Models', 'Guide_to_use')
+sys.path.insert(0, ml_guide_path)
+
 from guide import *
 stock_forecaster = StockForecaster()
 customer_churn_detector = Customer_Churn_Detection()

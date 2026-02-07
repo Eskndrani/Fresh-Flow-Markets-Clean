@@ -8,19 +8,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ynakhla/DIH-X-AUC-Hackathon.git"
+    "url": "git+https://github.com/Eskndrani/Fresh-Flow-Markets-Clean.git"
   },
   "keywords": [
     "hackathon",
     "deloitte",
     "auc"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Fresh Flow Markets Team",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ynakhla/DIH-X-AUC-Hackathon/issues"
+    "url": "https://github.com/Eskndrani/Fresh-Flow-Markets-Clean/issues"
   },
-  "homepage": "https://github.com/ynakhla/DIH-X-AUC-Hackathon#readme",
+  "homepage": "https://github.com/Eskndrani/Fresh-Flow-Markets-Clean#readme",
   "dependencies": {},
   "devDependencies": {}
 }

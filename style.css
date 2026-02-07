@@ -10,10 +10,12 @@
 
 /* 3. Navigation Row Container styling */
 [data-testid="column"] {
-    background /* Align the logo to the right and center it vertically in the nav bar */
-    [data-testid="column"]:last-child
+    background-color: #1E5631;
+    padding: 10px;
+}
 
-{
+/* Align the logo to the right and center it vertically in the nav bar */
+[data-testid="column"]:last-child {
     display: flex;
     justify-content: flex-end; /* Pushes logo to the far right */
     align-items: center; /* Centers it vertically with the buttons */
@@ -23,10 +25,6 @@
 /* Ensure the image doesn't have a border */
 [data-testid="stImage"] img {
     border: none !important;
-}
-
--color: #1E5631;
-padding: 10px;
 }
 
 /* 4. Navigation Buttons (Off-White text) */
@@ -69,12 +67,119 @@ h3, p, span, label, .stMetric {
     border-right: 1px solid #1E5631 !important;
 }
 
-    /* Force all text elements in the sidebar to be Black */
+    /* Force all text elements in the sidebar to be light colored for contrast */
     [data-testid="stSidebar"] .stMarkdown p,
     [data-testid="stSidebar"] label,
     [data-testid="stSidebar"] h1,
     [data-testid="stSidebar"] h2,
     [data-testid="stSidebar"] h3,
     [data-testid="stSidebar"] .stCaption {
-        color: #000000 !important; /* Pure Black */
+        color: #FAF9F6 !important; /* Off-white for good contrast on dark background */
     }
+
+    /* Sidebar input fields */
+    [data-testid="stSidebar"] input,
+    [data-testid="stSidebar"] select,
+    [data-testid="stSidebar"] textarea {
+        background-color: #FAF9F6 !important;
+        color: #064420 !important;
+    }
+
+    /* Sidebar selectbox text */
+    [data-testid="stSidebar"] .stSelectbox > div > div {
+        color: #064420 !important;
+    }
+
+/* --- FOOTER STYLING --- */
+footer {
+    visibility: hidden;
+}
+
+/* --- DATAFRAME STYLING --- */
+[data-testid="stDataFrame"] {
+    background-color: white !important;
+}
+
+[data-testid="stDataFrame"] th {
+    background-color: #1E5631 !important;
+    color: #FAF9F6 !important;
+    font-weight: 600 !important;
+}
+
+[data-testid="stDataFrame"] td {
+    color: #064420 !important;
+}
+
+/* --- EXPANDER STYLING --- */
+[data-testid="stExpander"] {
+    background-color: white !important;
+    border: 1px solid #1E5631 !important;
+}
+
+[data-testid="stExpander"] summary {
+    color: #064420 !important;
+    font-weight: 600 !important;
+}
+
+/* Expander content text */
+[data-testid="stExpander"] p,
+[data-testid="stExpander"] li,
+[data-testid="stExpander"] span,
+[data-testid="stExpander"] h1,
+[data-testid="stExpander"] h2,
+[data-testid="stExpander"] h3 {
+    color: #064420 !important;
+}
+
+/* Expander bold text */
+[data-testid="stExpander"] strong {
+    color: #1E5631 !important;
+}
+
+/* --- INFO/WARNING/SUCCESS/ERROR BOXES --- */
+.stAlert {
+    color: #064420 !important;
+}
+
+/* --- TEXT INPUT FIELDS --- */
+input, textarea, select {
+    background-color: white !important;
+    color: #064420 !important;
+    border: 1px solid #2E8B57 !important;
+}
+
+/* --- CODE BLOCKS --- */
+code {
+    background-color: #f0f0f0 !important;
+    color: #064420 !important;
+}
+
+/* --- MARKDOWN TEXT --- */
+.stMarkdown p, .stMarkdown li, .stMarkdown span {
+    color: #2E8B57 !important;
+}
+
+.stMarkdown h1, .stMarkdown h2 {
+    color: #064420 !important;
+}
+
+.stMarkdown h3 {
+    color: #1E5631 !important;
+}
+
+.stMarkdown strong {
+    color: #064420 !important;
+    font-weight: 700 !important;
+}
+
+/* --- INFO/WARNING/SUCCESS/ERROR BOXES TEXT --- */
+.stAlert p, .stAlert li {
+    color: #064420 !important;
+}
+
+/* --- FORM LABELS --- */
+.stTextInput label, .stNumberInput label, .stSelectbox label, 
+.stDateInput label, .stTimeInput label, .stTextArea label {
+    color: #064420 !important;
+    font-weight: 600 !important;
+}

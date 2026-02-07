@@ -159,9 +159,8 @@ The platform combines a modern web dashboard with a robust REST API backend, pow
 - **SQLAlchemy** (v2.0.0+): ORM and database toolkit
 
 ### **Machine Learning & Data Science**
-- **TensorFlow/Keras**: LSTM neural networks for time series forecasting
 - **scikit-learn** (v1.3.0+): Machine learning algorithms (Random Forest, Gradient Boosting)
-- **XGBoost** (v2.0.0+): Gradient boosting for revenue prediction
+- **XGBoost** (v2.0.0+): Gradient boosting for demand forecasting and revenue prediction
 - **pandas** (v2.0.0+): Data manipulation and analysis
 - **numpy** (v1.24.0+): Numerical computations
 - **joblib** (v1.3.0+): Model serialization and model persistence
@@ -211,22 +210,11 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**Note**: For TensorFlow/Keras models, ensure you have sufficient system resources. If you encounter issues, you can install TensorFlow separately:
-```bash
-pip install tensorflow
-```
-
 ### Step 4: Set Up Database
 ```bash
 # The database should be located at: database/fresh_flow_markets.db
 # If the database doesn't exist, run:
 python setup_database.py
-```
-
-### Step 5: Verify Installation
-```bash
-# Check that all models are accessible
-python -c "from New_ML_Models.Guide_to_use.model import StockForecaster; print('Models loaded successfully!')"
 ```
 
 ---
