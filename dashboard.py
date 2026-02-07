@@ -8,8 +8,14 @@ from datetime import date
 
 # API Configuration
 API_BASE = "http://localhost:5000"
-
-
+import sys
+sys.path.append('D:/Deloitte/New_ML_Models/Guide_to_use')
+from guide import *
+stock_forecaster = StockForecaster()
+customer_churn_detector = Customer_Churn_Detection()
+campaign_detector = Campaign_Detector()
+#opr_risk_predictor = Operational_risk_predictor()
+revenue_predictor = RevenuePredictor()
 
 def fetch_data(endpoint, params=None):
     try:
@@ -1196,31 +1202,69 @@ def show_forecasting():
     st.markdown("---")
 # Page routing
 if page == "Home":
-    # --- Redesigned Homepage Inspired by freshflow.ai ---
-    st.markdown("""
-        <div style='text-align:center;'>
-            <img src='logo.png.jpeg' width='120'/>
-        </div>
-    """, unsafe_allow_html=True)
-    st.title("Fuller Shelves, Less Waste")
+    # 1. Logo Section (Centered)
+    col1, col2, col3 = st.columns([2, 1, 2])
+    with col2:
+        try:
+            # Note: Ensure 'logo.png.jpeg' is in the same folder as dashboard.py
+            st.image('logo.png.jpeg', width=120)
+        except Exception:
+            st.info("💎 Fresh Flow Logo") 
+
+    # 2. Hero Section
+    st.markdown("<h1 style='text-align: center;'>Fuller Shelves, Less Waste</h1>", unsafe_allow_html=True)
     st.markdown("---")
+    
     st.subheader("Empowering Retailers with AI-Driven Inventory Management")
+    
+    # Fixed indentation for the description block
     st.markdown("""
-        Fresh Flow Markets leverages advanced AI to optimize inventory, reduce waste, and maximize profits for fresh produce departments. Our platform is designed to simplify ordering, casting, and supplier management for retailers of all sizes.
+    Fresh Flow Markets leverages advanced AI to optimize inventory, reduce waste, and 
+    maximize profits for fresh produce departments. Our platform is designed to 
+    simplify ordering, forecasting, and supplier management for retailers of all sizes.
     """)
+    
     st.markdown("---")
-    st.markdown("### Why Choose Fresh Flow?")
-    st.markdown("- Reduce stock-outs and waste\n- Boost revenue and margins\n- Make inventory management effortless\n- Empower your team with actionable insights\n- Seamless integration with your current systems")
+
+    # 3. Why Choose Fresh Flow (Organized into Columns)
+    st.markdown("### 🚀 Why Choose Fresh Flow?")
+    feat_col1, feat_col2 = st.columns(2)
+    
+    with feat_col1:
+        st.markdown("- **Reduce stock-outs** and waste")
+        st.markdown("- **Boost revenue** and margins")
+        st.markdown("- **Effortless** inventory management")
+    
+    with feat_col2:
+        st.markdown("- **Actionable** team insights")
+        st.markdown("- **Seamless** system integration")
+        st.markdown("- **Designed** for fresh retail")
+
     st.markdown("---")
-    st.markdown("### What Our Customers Say")
-    st.info("\"Fresh Flow Markets helped us decrease shrink and increase revenue. The outcome couldn't have been better!\"\n\n- Retail Store Owner")
-    st.info("\"With Fresh Flow's AI, we reduced waste and improved customer satisfaction.\"\n\n- Grocery Manager")
+
+    # 4. Testimonials
+    st.markdown("### 💬 What Our Customers Say")
+    st.info("\"Fresh Flow Markets helped us decrease shrink and increase revenue. The outcome couldn't have been better!\"\n\n**— Retail Store Owner**")
+    st.info("\"With Fresh Flow's AI, we reduced waste and improved customer satisfaction.\"\n\n**— Grocery Manager**")
+    
     st.markdown("---")
-    st.markdown("### Our Solution")
-    st.markdown("- AI-powered demand forecasting\n- Intuitive inventory tracking\n- Easy supplier management\n- Effortless IT integration\n- Designed for fresh produce and retail environments")
+
+    # 5. Our Solution List
+    st.markdown("### 🛠️ Our Solution")
+    st.markdown("""
+    * **AI-powered** demand forecasting
+    * **Intuitive** inventory tracking
+    * **Easy** supplier management
+    * **Effortless** IT integration
+    * **Specialized** for fresh produce environments
+    """)
+
     st.markdown("---")
+
+    # 6. Call to Action & Footer
     st.markdown("### Ready to try AI that really works for fresh produce?")
-    st.markdown("[Book a Demo](https://calendly.com/mael-freshflow) | [Contact Us](mailto:support@freshflow.com)")
+    st.markdown("[🎯 Book a Demo](https://calendly.com/mael-freshflow) | [📧 Contact Us](mailto:support@freshflow.com)")
+    
     st.caption("Deloitte x AUC Hackathon Project | v1.0.4-stable")
 elif page == "Business Trends":
     st.title("📊 Business Trends")
