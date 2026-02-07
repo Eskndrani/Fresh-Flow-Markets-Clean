@@ -341,7 +341,7 @@ def show_forecasting():
         st.subheader("Predict Item Demand")
         col1, col2 = st.columns([2, 1])
         with col1:
-            item_id = st.number_input("Item Category", min_value=1, value=1, help="Enter the Category of the item to forecast")
+            item_id = st.number_input("Item ID", min_value=1, value=1, help="Enter the ID of the item to forecast")
             forecast_days = st.slider("Forecast Period (days)", min_value=1, max_value=30, value=7)
         with col2:
             is_holiday = st.checkbox("Is Holiday Period?", value=False)
